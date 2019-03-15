@@ -104,10 +104,100 @@ function ExportText()
     });
 }
 
+function TotalPriceForCards(cards)
+{
+    var t = 0;
+    for (var i=0; i<cards.length; ++i)
+    {
+        var cardName = cards[i][1].name;
+        var data = TryCardPrice(cardName);
+        if (!data)
+            continue;
+        var price = Infinity;
+        for (var j=0; j<data.length; ++j)
+        {
+            var pricedata = data[j].price_data;
+            if (pricedata.status !== 'success')
+                continue;
+            var p = pricedata.data.prices.low;
+            if (p < price)
+                price = p;
+        }
+        if (price < Infinity)
+            t += price;
+    }
+    return t;
+}
+function UpdatePriceTotal()
+{
+    RequestAllCardData(function(data)
+    {
+        var total = 0;
+        total += TotalPriceForCards(data.main);
+        total += TotalPriceForCards(data.side);
+        total += TotalPriceForCards(data.extra);
+        document.getElementById('toolbox-price-list').firstElementChild.priceElement.innerText = '$' + total.toFixed(2);
+    });
+}
+
 let cardmarketEscape = function(name)
 {
     return name.replace(/-/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-/,'').replace(/-$/,'');
-}
+};
+let createListEntry = function(cardName)
+{
+    var container = document.createElement('div');
+    container.priceAmount = 0;
+    container.className = 'price-entry price-loading';
+    
+    var name = document.createElement('div');
+    name.className = 'price-name';
+    name.innerText = cardName;
+    container.appendChild(name);
+    
+    var price = document.createElement('div');
+    price.className = 'price-price';
+    container.appendChild(price);
+    
+    var ygopElement = document.createElement('div');
+    ygopElement.className = 'price-link-ygop';
+    var ygopLink = document.createElement('a');
+    ygopLink.title = 'View card on yugiohprices.com';
+    ygopLink.target = '_blank';
+    ygopLink.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(cardName);
+    var ygopIcon = document.createElement('img');
+    ygopIcon.src = 'https://yugiohprices.com/img/favicon.png';
+    ygopLink.appendChild(ygopIcon);
+    ygopElement.appendChild(ygopLink);
+    container.appendChild(ygopElement);
+    
+    var cmElement = document.createElement('div');
+    cmElement.className = 'price-link-cm';
+    var cmLink = document.createElement('a');
+    cmLink.title = 'View card on cardmarket.com';
+    cmLink.target = '_blank';
+    cmLink.href = 'https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(cardName);
+    var cmIcon = document.createElement('img');
+    cmIcon.src = 'https://static.cardmarket.com/img/526dbb9ae52c5e62404fe903e9769807/static/misc/favicon-96x96.png';
+    cmLink.appendChild(cmIcon);
+    cmElement.appendChild(cmLink);
+    container.appendChild(cmElement);
+    
+    var progress = document.createElement('div');
+    progress.className = 'price-progress';
+    progress.innerText = 'Loading...';
+    container.appendChild(progress);
+    
+    var error = document.createElement('div');
+    error.className = 'price-error';
+    error.innerText = 'API failed';
+    container.appendChild(error);
+    
+    container.priceElement = price;
+    container.errorElement = error;
+    
+    return container;
+};
 let updateCardPrice = function(data)
 {
     if (!this.parentElement)
@@ -128,6 +218,11 @@ let updateCardPrice = function(data)
         }
         if (min < Infinity)
             this.priceElement.innerText = '$'+min.toFixed(2);
+        else
+        {
+            data.status = false;
+            updateCardPrice.call(this,data);
+        }
         
         this.priceAmount = min;
         
@@ -146,6 +241,7 @@ let updateCardPrice = function(data)
         this.className = 'price-entry price-failed';
         this.errorElement.title = data.message;
     }
+    UpdatePriceTotal();
 };
 function LoadPriceBreakdownForCards(parent, cards, index)
 {
@@ -156,57 +252,8 @@ function LoadPriceBreakdownForCards(parent, cards, index)
             continue;
         index[cardName] = true;
         
-        var container = document.createElement('div');
-        container.priceAmount = 0;
-        container.className = 'price-entry price-loading';
-        
-        var name = document.createElement('div');
-        name.className = 'price-name';
-        name.innerText = cardName;
-        container.appendChild(name);
-        
-        var price = document.createElement('div');
-        price.className = 'price-price';
-        container.appendChild(price);
-        
-        var ygopElement = document.createElement('div');
-        ygopElement.className = 'price-link-ygop';
-        var ygopLink = document.createElement('a');
-        ygopLink.title = 'View card on yugiohprices.com';
-        ygopLink.target = '_blank';
-        ygopLink.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(cardName);
-        var ygopIcon = document.createElement('img');
-        ygopIcon.src = 'https://yugiohprices.com/img/favicon.png';
-        ygopLink.appendChild(ygopIcon);
-        ygopElement.appendChild(ygopLink);
-        container.appendChild(ygopElement);
-        
-        var cmElement = document.createElement('div');
-        cmElement.className = 'price-link-cm';
-        var cmLink = document.createElement('a');
-        cmLink.title = 'View card on cardmarket.com';
-        cmLink.target = '_blank';
-        cmLink.href = 'https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(cardName);
-        var cmIcon = document.createElement('img');
-        cmIcon.src = 'https://static.cardmarket.com/img/526dbb9ae52c5e62404fe903e9769807/static/misc/favicon-96x96.png';
-        cmLink.appendChild(cmIcon);
-        cmElement.appendChild(cmLink);
-        container.appendChild(cmElement);
-        
-        var progress = document.createElement('div');
-        progress.className = 'price-progress';
-        progress.innerText = 'Loading...';
-        container.appendChild(progress);
-        
-        var error = document.createElement('div');
-        error.className = 'price-error';
-        error.innerText = 'API failed';
-        container.appendChild(error);
-        
+        var container = createListEntry(cardName);
         parent.appendChild(container);
-        
-        container.priceElement = price;
-        container.errorElement = error;
         RequestCardPrice(cardName, updateCardPrice, container);
     }
 }
@@ -224,10 +271,16 @@ function LoadPriceBreakdown()
         button.firstElementChild.style.display = '';
         button.style.display = 'none';
         
+        var total = createListEntry('== TOTAL PRICE ==');
+        total.priceAmount = Infinity;
+        total.className = 'price-entry price-total';
+        container.appendChild(total);
+        
         var index = {};
         LoadPriceBreakdownForCards(container, data.main, index);
         LoadPriceBreakdownForCards(container, data.side, index);
         LoadPriceBreakdownForCards(container, data.extra, index);
+        UpdatePriceTotal();
         
         container.style.display = 'block';
     });

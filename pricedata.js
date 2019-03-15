@@ -29,6 +29,14 @@ function RequestCardPrice(name, callback, ctx)
         _cardPriceCallbacks[name].push([callback, ctx]);
 }
 
+function TryCardPrice(name)
+{
+    if (name in _cardPriceCache)
+        if (_cardPriceCache[name].status)
+            return _cardPriceCache[name].data;
+    return null;
+}
+
 function CardPriceSuccess()
 {
     var response;
@@ -57,6 +65,7 @@ function CardPriceFailed()
 function ProcessCardPrice(name, data)
 {
     data.name = name;
+    _cardPriceCache[name] = data;
     var callbacks = _cardPriceCallbacks[name];
     for (var i=0; i<callbacks.length; ++i)
         callbacks[i][0].call(callbacks[i][1], data);

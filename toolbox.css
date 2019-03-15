@@ -114,6 +114,7 @@ div.price-entry > div.price-name
     text-overflow: ellipsis;
 }
 div.price-entry.price-failed > div.price-name { text-decoration: line-through; }
+div.price-entry.price-total > div.price-name { font-weight: bold; }
 
 div.price-entry > div.price-price
 {
@@ -128,6 +129,7 @@ div.price-entry > div.price-price
     width: 50px;
 }
 div.price-entry.price-okay > div.price-price { display: block; }
+div.price-entry.price-total > div.price-price { display: block; font-weight: bold; }
 
 div.price-entry > div.price-link-ygop
 {
