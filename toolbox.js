@@ -271,7 +271,7 @@ function LoadPriceBreakdown()
         button.firstElementChild.style.display = '';
         button.style.display = 'none';
         
-        var total = createListEntry('== TOTAL PRICE ==');
+        var total = createListEntry('== PRICE BREAKDOWN ==');
         total.priceAmount = Infinity;
         total.className = 'price-entry price-total';
         container.appendChild(total);
