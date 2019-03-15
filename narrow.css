@@ -1,0 +1,43 @@
+div#zoom-viewer
+{
+    top: 0.70vw;
+    left: 0.70vw;
+    right: calc(50% + 37.10vw);
+    padding: 0.70vw;
+}
+div.deck
+{
+    left: calc(50% - 36.40vw);
+    width: 72.80vw;
+}
+div#toolbox
+{
+    top: 0.70vw;
+    bottom: 0.70vw;
+    left: calc(50% + 37.10vw);
+    right: 0.70vw;
+}
+div#main-deck
+{
+    top: 0.70vw;
+    height: 42.00vw;
+}
+div#extra-deck
+{
+    top: 43.40vw;
+    height: 12.60vw;
+}
+div#side-deck
+{
+    top: 56.70vw;
+    height: 12.60vw;
+}
+div.deck-label
+{
+    left: 2.10vw;
+}
+div.card
+{
+    width:    7.00vw;
+    height:   9.80vw;
+}

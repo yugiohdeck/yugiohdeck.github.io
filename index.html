@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=1000, initial-scale=1" />
+        <meta name="referrer" content="no-referrer" />
+        
+        <title>Deck Viewer</title>
+        
+        <link rel="stylesheet" href="cardviewer.css" />
+        <link rel="stylesheet" href="modals.css" />
+        <link rel="stylesheet" href="toolbox.css" />
+        <link rel="stylesheet" href="ygodeck.css" />
+        <link rel="stylesheet" media="screen and (max-aspect-ratio: 10/7)" href="narrow.css" />
+    </head>
+    
+    <body>
+        <script src="cardviewer.js"></script>
+        <script src="carddata.js"></script>
+        <script src="compression.js"></script>
+        <script src="modals.js"></script>
+        <script src="pricedata.js"></script>
+        <script src="settings.js"></script>
+        <script src="toolbox.js"></script>
+        <script src="ygodeck.js"></script>
+        
+        <noscript>Please enable Javascript.</noscript>
+        
+        <div id="import-ydk" class="noselect">
+            <div id="ydk-container">Import .ydk file: <input type="file" id="ydk" accept=".ydk" /></div>
+            <div id="ydk-subtext"><a id="ydk-about">About</a> | <a id="ydk-privacy">Privacy</a> | <span>API data</span> by <a href="https://ygoprodeck.com" target="_blank">YGOPRODeck</a> | <span>Prices</span> by <a href="http://yugiohprices.com/" target="_blank">Yugioh Prices</a> | <span>Special thanks</span> to <a href="https://cors-anywhere.herokuapp.com/">CORS Anywhere</a></div>
+        </div>
+        
+        <div id="zoom-viewer">
+            <div id="zoom-image"><img /></div>
+            <div id="zoom-name"></div>
+            <div id="zoom-text"></div>
+            <div id="zoom-links">
+                <a id="zoom-konamidb-en" title="View card on the English Konami DB" target="_blank"><img src="https://www.db.yugioh-card.com/yugiohdb/external/image/yugioh.ico" /><div>EN</div></a>
+                <a id="zoom-konamidb-jp" title="View card rulings on the Japanese Konami DB" target="_blank"><img src="https://www.db.yugioh-card.com/yugiohdb/external/image/yugioh.ico" /><div>JP</div></a>
+                <a id="zoom-yugipedia" title="View card on Yugipedia" target="_blank"><img src="https://ms.yugipedia.com/6/64/Favicon.ico" /></a>
+            </div>
+        </div>
+        
+        <div id="main-deck" class="deck">
+            <div id="main-deck-label" class="noselect">0)</div>
+            <div class="deck-border"></div>
+            <div id="main-deck-container"></div>
+        </div>
+        <div id="extra-deck" class="deck">
+            <div id="extra-deck-label" class="noselect">0)</div>
+            <div class="deck-border"></div>
+            <div id="extra-deck-container"></div>
+        </div>
+        <div id="side-deck" class="deck">
+            <div id="side-deck-label" class="noselect">0)</div>
+            <div class="deck-border"></div>
+            <div id="side-deck-container"></div>
+        </div>
+        
+        <div id="toolbox">
+            <div id="toolbox-main">
+                <div>
+                    <div id="toolbox-settings" class="toolbox-button noselect">Settings</div>
+                    <div id="toolbox-title" class="toolbox-button noselect">Change Title</div>
+                    <div id="toolbox-close" class="toolbox-button noselect">Close Deck</div>
+                </div>
+                <div>
+                    <div id="toolbox-copyurl" class="toolbox-button noselect">Copy URL<div class="toolbox-indicator">Copied!</div></div>
+                    <div id="toolbox-export-ydk" class="toolbox-button noselect">Export as YDK</div>
+                    <div id="toolbox-export-text" class="toolbox-button noselect">Export as text<div class="toolbox-indicator">Working...</div></div>
+                </div>
+            </div>
+            <div id="toolbox-price">
+                <div id="toolbox-price-load" class="toolbox-button noselect">Load price breakdown<div class="toolbox-indicator">Loading...</div></div>
+                <div id="toolbox-price-list" class="noselect">
+                </div>
+            </div>
+        </div>
+        
+        <div id="modal-background"></div>
+        <div id="modal-container">
+            <div id="modal-settings">
+                <div>Stack duplicate cards <div id="switch-stackDuplicates" class="switch"><div class="switch-bar"></div><div class="switch-button"></div></div></div>
+                <div>Stack cards left-to-right <div id="switch-stackLTR" class="switch"><div class="switch-bar"></div><div class="switch-button"></div></div></div>
+                <div>Use high-resolution cards in overview <div  id="switch-highResCards" class="switch"><div class="switch-bar"></div><div class="switch-button"></div></div></div>
+            </div>
+            <div id="modal-about" class="noselect">
+                <div><b>About</b>
+
+Developed and maintained by <a href="https://www.reddit.com/user/gallantron/" target="_blank">/u/gallantron</a> for <a href="https://www.reddit.com/r/yugioh/" target="_blank">/r/yugioh</a>.
+
+While hoping it shall not become necessary, the author would like to grant to any person obtaining a copy of this web application the rights to use, copy, modify, merge, publish or distribute the application or copies thereof in the event that both the original author and the current maintainer have become unreachable.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+This web application makes use of copyrighted, unlicensed text and imagery from the Yu-Gi-Oh! TRADING CARD GAME (©1996 KAZUKI TAKAHASHI). Due to the nature of the application, the author believes this to qualify as Fair Use under U.S. copyright law.
+
+For information about how this application protects your data, please refer to the "Privacy" modal.
+                </div>
+            </div>
+            <div id="modal-privacy" class="noselect">
+                <div><b>Privacy</b>
+
+This application is currently hosted using <a href="https://pages.github.com/" target="_blank">GitHub pages</a>.
+As a result of you accessing this page, some potentially identifying information about your connection has unavoidably been exposed to the GitHub servers due to how the internet works. The author cannot speak for whether GitHub stores copies of this information
+
+The server hosting this application does not receive any information about the decks or cards you are viewing. All deck data is encoded in the anchor tag portion of the hyperlink URI, which is never transmitted to the server by your browser. This deck data is processed exclusively via client-side Javascript, which can be freely reviewed in human-readable form by perusing the dev console in your browser.
+
+In the course of visualizing the deck data, card data and imagery is retrieved from the <a href="https://db.ygoprodeck.com/api-guide/" target="_blank">YGOPRODeck API</a>, again exposing some identifying information by necessity, combined with information about the card you are requesting. The author does not know whether YGOPRODeck stores this information longer than is necessary, but feels obliged to point out that YGOPRODeck has the <i>capability</i> to identify the cards you are viewing, and pattern analysis could <i>in theory</i> allow them to reconstruct deck lists from this data. The author does not believe YGOPRODeck to be engaged in any of the activities previously outlined as hypotheticals.
+
+If a price breakdown for a deck is requested, pricing data is retrieved from the <a href="https://yugiohprices.docs.apiary.io/" target="_blank">Yu-Gi-Oh Prices API</a>, with all the implications already mentioned for the YGOPRODeck API above. Again, the author does not believe that the API supplier is engaging in the activities outlined.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

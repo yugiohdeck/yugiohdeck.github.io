@@ -1,0 +1,108 @@
+div#modal-background
+{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #000000;
+    transition: opacity 1s ease-out;
+    opacity: 0.6;
+    
+    z-index: 50000;
+}
+div#modal-background:hover
+{
+    opacity: 0.5;
+}
+
+div#modal-container
+{
+    display: block;
+    z-index: 50001;
+}
+
+div#modal-container > div
+{
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background: #aaaaaa;
+    border: 4px solid #777777;
+    border-radius: 8px;
+    z-index: 50002;
+}
+
+div#modal-settings
+{
+    width: 400px;
+    height: 600px;
+}
+div#modal-settings switch { float: right; }
+
+div#modal-settings > div
+{
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 15px;
+    line-height: 30px;
+    vertical-align: middle;
+}
+div.switch
+{
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 30px;
+}
+div.switch > div.switch-bar
+{
+    background: linear-gradient(to right, #006699 0%, #006699 50%, #aaaaaa 50%, #aaaaaa 100%);
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 7px;
+    bottom: 7px;
+    border: 1px solid #333333;
+    border-radius: 8px;
+}
+div.switch > div.switch-button
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background: #787878;
+    transition: left 0.2s ease;
+}
+div.switch.enabled > div.switch-button { left: 20px; }
+
+div#modal-about, div#modal-privacy
+{
+    width: 700px;
+    height: 600px;
+}
+div#modal-about > div, div#modal-privacy > div
+{
+    white-space: pre-wrap;
+    
+    font-family: Monospace;
+    
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    right: 15px;
+    bottom: 15px;
+    padding: 10px;
+    background: #cccccc;
+}
+div#modal-about > div > b
+{
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 15px;
+}
