@@ -1,3 +1,41 @@
+div#import-container
+{
+    margin-left: calc(-2px + -26.60vw);
+    margin-top: calc(-2px + -12.60vw);
+}
+div#import-box
+{
+    width: 53.20vw;
+    height: 17.50vw;
+}
+div#import-header
+{
+    top: 0.70vw;
+    bottom: 14.70vw;
+    font-size: 1.75vw;
+}
+div#import-label-paste, div#import-label-click, div#import-label-drop
+{
+    font-size: 1.40vw;
+    top: 3.50vw;
+    bottom: 0.70vw;
+}
+div#import-box > div > span
+{
+ display: block; font-weight: bold; font-size: 2.10vw; 
+}
+div#import-label-paste
+{
+ left: 0.70vw; right: 36.40vw; 
+}
+div#import-label-click
+{
+ left: 18.90vw; right: 18.90vw; 
+}
+div#import-label-drop 
+{
+ left: 36.40vw; right: 0.70vw; 
+}
 div#zoom-viewer
 {
     top: 0.70vw;
@@ -32,7 +70,7 @@ div#side-deck
     top: 56.70vw;
     height: 12.60vw;
 }
-div.deck-label
+div#main-deck-label, div#extra-deck-label, div#side-deck-label
 {
     left: 2.10vw;
 }

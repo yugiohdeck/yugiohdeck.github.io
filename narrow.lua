@@ -6,7 +6,7 @@ assert(infile and outfile)
 local content = infile:read('*a')
 infile:close()
 
-for tag, rules in content:gmatch('([^\n\r]+)%s+({[^}]+})') do
+for tag, rules in content:gmatch('([^\n\r]+)%s+{([^}]+)}') do
     local hadTag = false
     for rule in rules:gmatch('[^\n\r]+') do
         local c

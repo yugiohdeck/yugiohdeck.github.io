@@ -14,10 +14,13 @@
         <link rel="stylesheet" media="screen and (max-aspect-ratio: 10/7)" href="narrow.css" />
     </head>
     
-    <body>
+    <body ondrop="HandleDrop(event);" ondragover="HandleDrag(event);">
         <script src="cardviewer.js"></script>
         <script src="carddata.js"></script>
         <script src="compression.js"></script>
+        <script src="import-base.js"></script>
+        <script src="import-duelingbook.js"></script>
+        <script src="import-ydk.js"></script>
         <script src="modals.js"></script>
         <script src="pricedata.js"></script>
         <script src="settings.js"></script>
@@ -26,9 +29,17 @@
         
         <noscript>Please enable Javascript.</noscript>
         
-        <div id="import-ydk" class="noselect">
-            <div id="ydk-container">Import .ydk file: <input type="file" id="ydk" accept=".ydk" /></div>
-            <div id="ydk-subtext"><a id="ydk-about">About</a> | <a id="ydk-privacy">Privacy</a> | <span>API data</span> by <a href="https://ygoprodeck.com" target="_blank">YGOPRODeck</a> | <span>Prices</span> by <a href="http://yugiohprices.com/" target="_blank">Yugioh Prices</a> | <span>Special thanks</span> to <a href="https://cors-anywhere.herokuapp.com/">CORS Anywhere</a></div>
+        <div id="import-container" class="noselect">
+            <div id="import-box">
+                <div id="import-header">To get started...</div>
+                <div id="import-label-paste"><span>Paste</span> a supported link</div>
+                <div id="import-separator-1"></div>
+                <div id="import-label-click"><span>Click</span> to select a YDK file</div>
+                <div id="import-separator-2"></div>
+                <div id="import-label-drop"><span>Drop</span> a file or link here</div>
+                <div id="import-status"></div>
+            </div>
+            <div id="import-subtext"><a id="subtext-about">About</a> | <a id="subtext-privacy">Privacy</a> | <span>API data</span> by <a href="https://ygoprodeck.com" target="_blank">YGOPRODeck</a> | <span>Prices</span> by <a href="http://yugiohprices.com/" target="_blank">Yugioh Prices</a> | <span>Special thanks</span> to <a href="https://cors-anywhere.herokuapp.com/" target="_blank">CORS Anywhere</a></div>
         </div>
         
         <div id="zoom-viewer">

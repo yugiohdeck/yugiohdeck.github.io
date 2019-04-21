@@ -100,19 +100,12 @@ function LoadDeck(cards, tag)
         container.removeChild(container.lastChild);
     if (!cards)
         return;
-    if (cards.length%9) // data format is 8 character id + 1 character multiplicity
-        throw ('Invalid deck data for ' + tag + ' deck');
-    if (!(/^\d*$/.test(cards)))
-        throw ('Invalid characters in deck data for ' + tag + ' deck');
     
-    for (var i=0; i<cards.length; i+=9)
+    for (var i=0, n=cards.length; i<n; ++i)
     {
-        var id = parseInt(cards.substring(i,i+8));
-        var count = parseInt(cards.substring(i+8,i+9));
-        if (!count)
-            throw ('Invalid zero-copy card in deck data for ' + tag + 'deck');
-        
-        for (var n=0;n<count;++n)
+        var id = cards[i][0];
+        var count = cards[i][1];
+        for (var j=0;j<count;++j)
             container.appendChild(MakeDOMCard(id));
     }
     
@@ -147,6 +140,7 @@ let updateFromHashData = function()
 
 function SetDeckTitle(title) { hashData.title = (title && title.length) ? title : null; HashDataChanged(); }
 function GetDeckTitle() { return hashData.title; }
+function SetDeckData(main, extra, side, title) { hashData.decks.main = main; hashData.decks.extra = extra; hashData.decks.side = side; SetDeckTitle(title); }
 
 function HashDataChanged()
 {
@@ -156,9 +150,9 @@ function HashDataChanged()
         updateFromHashData();
         return;
     }
-    if (hashData.decks.extra === '')
+    if (!hashData.decks.extra.length)
         hashData.decks.extra = null;
-    if (hashData.decks.side === '')
+    if (!hashData.decks.side.length)
         hashData.decks.side = null;
     
     var newTag = CompressDeckData(hashData.decks.main);
@@ -218,86 +212,66 @@ function ReloadFromHashData()
     }
 }
 
-function DoImportYDK()
+function HandleDataTransfer(data)
 {
-    var lines = this.result.split(/[\r\n]+/);
-    var main = '';
-    var extra = '';
-    var side = '';
-    
-    var deck = null;
-    var lastId = null;
-    var num;
-    for (var i=0; i<lines.length; ++i)
+    if (data.items)
     {
-        var line = lines[i];
-        if ((line === lastId) && (num < 3))
+        for (var i=0; i < data.items.length; ++i)
         {
-            ++num;
-            continue;
-        }
-        
-        if (deck && lastId)
-        {
-            lastId = ('0000000' + lastId).slice(-8);
-            if (deck === 'main')
-                main += (lastId + num);
-            else if (deck === 'extra')
-                extra += (lastId + num);
-            else if (deck === 'side')
-                side += (lastId + num);
-            lastId = null;
-        }
-        
-        if (line === '#main')
-            deck = 'main';
-        else if (line === '#extra')
-            deck = 'extra';
-        else if (line === '!side')
-            deck = 'side';
-        else if (/^\d+$/.test(line))
-        {
-            lastId = line;
-            num = 1;
+            if (data.items[i].kind !== 'file')
+                continue;
+            if (AttemptFileImport(data.items[i].getAsFile()))
+                return;
         }
     }
-    if (deck && lastId)
+    else
     {
-        lastId = ('0000000' + lastId).slice(-8);
-        if (deck === 'main')
-            main += (lastId + num);
-        else if (deck === 'extra')
-            extra += (lastId + num);
-        else if (deck === 'side')
-            side += (lastId + num);
-        lastId = null;
+        for (var i=0; i < data.files.length; ++i)
+        {
+            if (AttemptFileImport(data.files[i]))
+                return;
+        }
     }
-    
-    hashData.decks.main = main;
-    hashData.decks.extra = extra;
-    hashData.decks.side = side;
-    hashData.title = this.fileName;
-    HashDataChanged();
+    var text = data.getData('text/plain');
+    if (text && text !== '')
+        AttemptTextImport(text);
 }
 
-function ImportYDK()
+function HandleDrag(e)
+{
+    e.preventDefault();
+}
+
+function HandleDrop(e)
+{
+    e.preventDefault();
+    HandleDataTransfer(e.dataTransfer);
+}
+
+function HandlePaste(e)
+{
+    e.preventDefault();
+    HandleDataTransfer(e.clipboardData || window.clipboardData);
+}
+
+function HandleFileSelect()
 {
     if (!this.files.length)
         return;
-    
-    var ydkFile = this.files[0];    
-    var reader = new FileReader();
-    reader.fileName = ydkFile.name;
-    reader.addEventListener('load',DoImportYDK);
-    reader.readAsText(this.files[0]);
-    this.value = this.defaultValue;
+    AttemptFileImport(this.files[0]);
 }
+
+let dummyInput = document.createElement('input');
+dummyInput.type = 'file';
+dummyInput.accept = '.ydk';
+dummyInput.addEventListener('change', HandleFileSelect);
 
 document.addEventListener("DOMContentLoaded",function()
 {
     ReloadFromHashData();
     
-    document.getElementById('ydk').addEventListener('change', ImportYDK);
-    document.getElementById('ydk-about').addEventListener('click', function() { ShowModal('modal-about'); });
-    document.getElementById('ydk-privacy').addEventListener('click', function() { ShowModal('modal-privacy'); });
+    document.getElementById('subtext-about').addEventListener('click', function() { ShowModal('modal-about'); });
+    document.getElementById('subtext-privacy').addEventListener('click', function() { ShowModal('modal-privacy'); });
+    document.body.addEventListener('paste', HandlePaste);
+    document.getElementById('import-box').addEventListener('click', function() { dummyInput.click(); });
 });

@@ -2,23 +2,10 @@ const BITS_PER_CHAR = 8;
 const BITS_PER_CARD_CODE = 27;
 const BITS_PER_CARD_COUNT = 2;
 
-let isDecompressedDeckData = function(data) { return ((!(data.length%9)) && /^\d+$/.test(data)); };
-let getFirstIndexAfterPadding = function(data)
-{
-    var i = 0;
-    while (i < data.length && data.charCodeAt(i) == 0)
-        ++i;
-    if (i < data.length && data.charCodeAt(i) == 1)
-        return i+1;
-    return 0;
-}
-
 function CompressDeckData(data)
 {
     if (!data || !data.length)
         return '';
-    if (!isDecompressedDeckData(data))
-        throw 'Internal error - invalid deck data: ' + data;
     
     var raw = '';
     
@@ -28,7 +15,9 @@ function CompressDeckData(data)
     var nextBitInOutput = 0;
     while (currentCardIndex < data.length)
     {
-        var currentCardNumData = ((parseInt(data.substring(currentCardIndex,currentCardIndex+8)) << BITS_PER_CARD_COUNT) | Math.min(parseInt(data.substring(currentCardIndex+8,currentCardIndex+9)),(1 << BITS_PER_CARD_COUNT)-1));
+        var cardCode = data[currentCardIndex][0];
+        var cardCount = data[currentCardIndex][1];
+        var currentCardNumData = ((cardCode << BITS_PER_CARD_COUNT) | Math.min(cardCount,(1 << BITS_PER_CARD_COUNT)-1));
         var bitsToWrite = Math.min(BITS_PER_CHAR - nextBitInOutput, (BITS_PER_CARD_CODE + BITS_PER_CARD_COUNT) - nextBitInInput);
         if (nextBitInInput)
             currentCardNumData &= (1 << ((BITS_PER_CARD_CODE + BITS_PER_CARD_COUNT) - nextBitInInput))-1;
@@ -45,35 +34,25 @@ function CompressDeckData(data)
         }
         if ((nextBitInInput += bitsToWrite) == (BITS_PER_CARD_CODE + BITS_PER_CARD_COUNT))
         {
-            currentCardIndex += 9;
+            currentCardIndex += 1;
             nextBitInInput = 0;
         }
     }
     if (nextBitInOutput)
         raw += String.fromCharCode(outputCharCode);
     
-    var compressed; // add padding
-    if (getFirstIndexAfterPadding(raw) || isDecompressedDeckData(compressed = btoa(raw)))
-    {
-        raw = (String.fromCharCode(0) + String.fromCharCode(1) + raw);
-        while (isDecompressedDeckData(compressed = btoa(raw)))
-            raw = (String.fromCharCode(0) + raw);
-    }
-        
-    return compressed;
+    return btoa(raw);
 }
 
 function DecompressDeckData(data)
 {
     if (!data || !data.length)
         return null;
-    if (isDecompressedDeckData(data))
-        return data; // data is not compressed (old URL)
     
     var raw = atob(data);
-    var decompressed = '';
+    var decompressed = [];
     
-    var nextCharacterIndex = getFirstIndexAfterPadding(data);
+    var nextCharacterIndex = 0;
     var nextBitInCharacter = 0;
     
     var readCardData = 0;
@@ -93,8 +72,7 @@ function DecompressDeckData(data)
         {
             var cardCode = readCardData >> BITS_PER_CARD_COUNT;
             var cardCount = readCardData & ((1 << BITS_PER_CARD_COUNT)-1);
-            decompressed += ('0000000' + cardCode).slice(-8);
-            decompressed += cardCount;
+            decompressed.push([+cardCode, +cardCount]);
             
             readCardData = 0;
             nextBitInOutput = 0;
