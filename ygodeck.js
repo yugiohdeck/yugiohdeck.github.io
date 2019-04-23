@@ -150,9 +150,9 @@ function HashDataChanged()
         updateFromHashData();
         return;
     }
-    if (!hashData.decks.extra.length)
+    if (hashData.decks.extra && !hashData.decks.extra.length)
         hashData.decks.extra = null;
-    if (!hashData.decks.side.length)
+    if (hashData.decks.side && !hashData.decks.side.length)
         hashData.decks.side = null;
     
     var newTag = CompressDeckData(hashData.decks.main);
