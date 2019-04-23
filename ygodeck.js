@@ -98,15 +98,16 @@ function LoadDeck(cards, tag)
     var container = document.getElementById(tag+'-deck-container');
     while (container.lastChild)
         container.removeChild(container.lastChild);
-    if (!cards)
-        return;
     
-    for (var i=0, n=cards.length; i<n; ++i)
+    if (cards)
     {
-        var id = cards[i][0];
-        var count = cards[i][1];
-        for (var j=0;j<count;++j)
-            container.appendChild(MakeDOMCard(id));
+        for (var i=0, n=cards.length; i<n; ++i)
+        {
+            var id = cards[i][0];
+            var count = cards[i][1];
+            for (var j=0;j<count;++j)
+                container.appendChild(MakeDOMCard(id));
+        }
     }
     
     var label = document.getElementById(tag+'-deck-label');
