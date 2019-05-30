@@ -81,7 +81,7 @@ window.setInterval(function()
     var request = new XMLHttpRequest();
     request.addEventListener("load", CardPriceSuccess);
     request.addEventListener("error", CardPriceFailed);
-    request.open("GET", "https://cors-anywhere.herokuapp.com/yugiohprices.com/api/get_card_prices/" + encodeURIComponent(name));
+    request.open("GET", "https://yugiohdeck-proxy.herokuapp.com/yugiohprices.com/api/get_card_prices/" + encodeURIComponent(name));
     request.cardName = name;
     request.send();
 }, REQUEST_THROTTLE_PRICE);
