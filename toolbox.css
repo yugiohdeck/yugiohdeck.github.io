@@ -113,6 +113,11 @@ div.price-entry > div.price-name
     overflow: hidden;
     text-overflow: ellipsis;
 }
+div.price-entry.price-loading > div.price-name
+{
+    font-family: monospace;
+    color: #555555;
+}
 div.price-entry.price-failed > div.price-name { text-decoration: line-through; }
 div.price-entry.price-total > div.price-name { font-weight: bold; }
 

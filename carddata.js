@@ -72,16 +72,21 @@ function RequestAllCardData(callback, ctx)
         _allCardDataCallbacks.push([callback,ctx]);
 }
 
-function ProcessCardData()
+let processCardData = function(id, data)
 {
-    try {
-        var data = JSON.parse(this.responseText)[0][0];
-        if (!(/^\d+$/.test(data.id)))
-            throw '';
-        
-        var id = parseInt(data.id);
+    if (data.id)
+        data.id = parseInt(data.id);
+    else
         data.id = id;
-        
+    
+    if (data.id != id)
+    {
+        data.success = false;
+        data.message = "Card ID mismatch";
+    }
+    
+    if (data.success)
+    {
         if (data.atk)
             data.atk = parseInt(data.atk);
         if (data.def)
@@ -93,13 +98,18 @@ function ProcessCardData()
             data.linkval = parseInt(data.linkval);
         if (data.scale)
             data.scale = parseInt(data.scale);
-        
+    
+        if (data.cardmarket_price)
+            data.cardmarket_price = parseFloat(data.cardmarket_price)
+        if (data.tcgplayer_price)
+            data.tcgplayer_price = parseFloat(data.tcgplayer_price)
+        if (data.ebay_price)
+            data.ebay_price = parseFloat(data.ebay_price)
+        if (data.amazon_price)
+            data.amazon_price = parseFloat(data.amazon_price)
         _cardDataCache[id] = data;
-    } catch (e) {
-        console.error(e);
-        CardDataFailed.call(this);
-        return;
     }
+    
     var callbacks = _cardDataCallbacks[id];
     for (var i=0; i<callbacks.length; ++i)
         callbacks[i][0].call(callbacks[i][1], data);
@@ -119,12 +129,41 @@ function ProcessCardData()
             f[0].call(f[1],allData);
         }
     }
-}
+};
 
-function CardDataFailed()
+let cardDataSuccess = function()
 {
+    var response;
+    if (this.status < 200 || this.status >= 300)
+        response = { status: false, message: this.status + ' ' + this.statusText };
+    else try
+    {
+        response = JSON.parse(this.responseText);
+        if (response.error)
+            response = { status: false, message: response.error };
+        else
+        {
+            response = response[0][0];
+            response.status = true;
+        }
+        if (!response.status)
+            console.error("Price API failed", this);
+    }
+    catch (e)
+    {
+        response = { status: false, message: "Invalid response" };
+        console.error("Price API parsing failed", e);
+    }
+    
+    processCardData(this.cardId, response);
+};
+
+let cardDataFailed = function()
+{
+    var resp = { status: false, message: "XHR failed" };
     console.error("Data API failed", this);
-}
+    processCardData(this.cardId, response);
+};
 
 window.setInterval(function()
 {
@@ -147,9 +186,10 @@ window.setInterval(function()
     _cardDataCache[id] = null;
     
     var request = new XMLHttpRequest();
-    request.addEventListener("load", ProcessCardData);
-    request.addEventListener("error", CardDataFailed);
-    request.open("GET", "https://db.ygoprodeck.com/api/v2/cardinfo.php?name=" + id, true);
+    request.addEventListener("load", cardDataSuccess);
+    request.addEventListener("error", cardDataFailed);
+    request.open("GET", "https://db.ygoprodeck.com/api/v4/cardinfo.php?name=" + id, true);
+    request.cardId = id;
     request.send();
     
 }, REQUEST_THROTTLE_DATA);
