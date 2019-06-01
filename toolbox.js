@@ -215,8 +215,6 @@ let AddPriceBreakdownForCards = function(container, tag, index)
     for (var i=0; i<deck.children.length; ++i)
     {
         var cardId = deck.children[i].cardId;
-        if (!cardId)
-            console.log(deck.children[i]);
         if (cardId in index)
         {
             ++(index[cardId].count);

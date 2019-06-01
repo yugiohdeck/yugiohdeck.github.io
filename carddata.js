@@ -79,13 +79,13 @@ let processCardData = function(id, data)
     else
         data.id = id;
     
-    if (data.id != id)
+    if (data.id !== id)
     {
-        data.success = false;
+        data.status = false;
         data.message = "Card ID mismatch";
     }
     
-    if (data.success)
+    if (data.status)
     {
         if (data.atk)
             data.atk = parseInt(data.atk);
@@ -100,13 +100,13 @@ let processCardData = function(id, data)
             data.scale = parseInt(data.scale);
     
         if (data.cardmarket_price)
-            data.cardmarket_price = parseFloat(data.cardmarket_price)
+            data.cardmarket_price = parseFloat(data.cardmarket_price);
         if (data.tcgplayer_price)
-            data.tcgplayer_price = parseFloat(data.tcgplayer_price)
+            data.tcgplayer_price = parseFloat(data.tcgplayer_price);
         if (data.ebay_price)
-            data.ebay_price = parseFloat(data.ebay_price)
+            data.ebay_price = parseFloat(data.ebay_price);
         if (data.amazon_price)
-            data.amazon_price = parseFloat(data.amazon_price)
+            data.amazon_price = parseFloat(data.amazon_price);
         _cardDataCache[id] = data;
     }
     
