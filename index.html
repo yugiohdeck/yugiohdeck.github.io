@@ -15,6 +15,7 @@
     </head>
     
     <body ondrop="HandleDrop(event);" ondragover="HandleDrag(event);">
+        <script src="include/easy.qrcode.js"></script>
         <script src="cardviewer.js"></script>
         <script src="carddata.js"></script>
         <script src="compression.js"></script>
@@ -73,12 +74,13 @@
                 <div>
                     <div id="toolbox-settings" class="toolbox-button noselect">Settings</div>
                     <div id="toolbox-title" class="toolbox-button noselect">Change Title</div>
+                    <div id="toolbox-copyurl" class="toolbox-button noselect">Copy URL<div class="toolbox-indicator">Copied!</div></div>
                     <div id="toolbox-close" class="toolbox-button noselect">Close Deck</div>
                 </div>
                 <div>
-                    <div id="toolbox-copyurl" class="toolbox-button noselect">Copy URL<div class="toolbox-indicator">Copied!</div></div>
                     <div id="toolbox-export-ydk" class="toolbox-button noselect">Export as YDK</div>
                     <div id="toolbox-export-text" class="toolbox-button noselect">Export as text<div class="toolbox-indicator">Working...</div></div>
+                    <div id="toolbox-export-qr" class="toolbox-button noselect">Export QR code</div>
                 </div>
             </div>
             <div id="toolbox-price">
@@ -121,6 +123,8 @@ In the course of visualizing the deck data, card data and imagery is retrieved f
 
 If a price breakdown for a deck is requested, pricing data is retrieved from the <a href="https://yugiohprices.docs.apiary.io/" target="_blank">Yu-Gi-Oh Prices API</a>, with all the implications already mentioned for the YGOPRODeck API above. Again, the author does not believe that the API supplier is engaging in the activities outlined.
                 </div>
+            </div>
+            <div id="modal-qr">
             </div>
         </div>
     </body>

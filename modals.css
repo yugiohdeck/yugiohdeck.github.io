@@ -106,3 +106,9 @@ div#modal-about > div > b
     font-family: Verdana, Geneva, sans-serif;
     font-size: 15px;
 }
+
+div#modal-qr
+{
+    width: 256px;
+    height: 256px;
+}

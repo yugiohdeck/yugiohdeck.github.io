@@ -104,6 +104,20 @@ function ExportText()
     });
 }
 
+function ExportQRCode()
+{
+    if (!ExportQRCode.qrCode)
+        ExportQRCode.qrCode = new QRCode(document.getElementById('modal-qr'), {
+            width: 256,
+            height: 256,
+            logo: 'large.ico',
+            colorLight: '#cccccc',
+            titleHeight: 0
+        });
+    ExportQRCode.qrCode.makeCode(document.location.href);
+    ShowModal('modal-qr');
+}
+
 function UpdatePriceTotal()
 {
     var container = document.getElementById('toolbox-price-list');
@@ -112,7 +126,7 @@ function UpdatePriceTotal()
     {
         var el = container.children[i];
         if (el.priceAmount < Infinity)
-            total += el.priceAmount;
+            total += el.priceAmount * el.count;
     }
     document.getElementById('toolbox-price-list').firstElementChild.priceElement.innerText = '$' + total.toFixed(2);
 }
@@ -186,7 +200,7 @@ let updateCardPrice = function(data)
     {
         this.className = 'price-entry price-okay';
         this.nameElement.innerText = data.name;
-        this.priceAmount = data.tcgplayer_price * this.count;
+        this.priceAmount = data.tcgplayer_price;
         this.priceElement.innerText = '$'+this.priceAmount.toFixed(2);
         this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
         this.cmLinkElement.href = 'https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name);
@@ -268,6 +282,7 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('toolbox-copyurl').addEventListener("click", CopyURL);
     document.getElementById('toolbox-export-ydk').addEventListener("click", ExportYDK);
     document.getElementById('toolbox-export-text').addEventListener("click", ExportText);
+    document.getElementById('toolbox-export-qr').addEventListener("click", ExportQRCode);
     
     document.getElementById('toolbox-price-load').addEventListener("click", LoadPriceBreakdown);
 });
