@@ -1,12 +1,14 @@
 div#zoom-image
 {
     text-align: center;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 div#zoom-image > img
 {
+    border-radius: 3%;
     max-width: 100%;
     max-height: 100%;
-    border-radius: 3%;
 }
 
 div#zoom-name
@@ -19,6 +21,8 @@ div#zoom-name
     font-size: 18px;
     background: #999999;
     border-radius: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div#zoom-text
@@ -30,6 +34,8 @@ div#zoom-text
     font-size: 14px;
     background: #999999;
     border-radius: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div#zoom-links

@@ -1,0 +1,24 @@
+{
+    "short_name": "Deck Viewer",
+    "name": "Yu-Gi-Oh! Deck Viewer",
+    "icons": [
+      {
+        "src": "/favicon.ico",
+        "type": "image/vnd.microsoft.icon",
+        "sizes": "16x16"
+      },
+      {
+        "src": "/large.ico",
+        "type": "image/vnd.microsoft.icon",
+        "sizes": "64x64"
+      },
+      {
+        "src": "/huge.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "/",
+    "background_color": "#cccccc",
+    "display": "standalone"
+}
