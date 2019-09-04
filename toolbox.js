@@ -14,18 +14,17 @@ function SaveAs(filename, content)
 
 function CopyURL()
 {
-    var btn = this;
-    if (btn.currentlyDisabled)
+    if (this.currentlyDisabled)
         return;
-    btn.currentlyDisabled = true;
-    navigator.clipboard.writeText(document.location.href).then(function()
+    this.currentlyDisabled = true;
+    navigator.clipboard.writeText(document.location.href).then(() =>
     {
-        btn.firstElementChild.style.display = 'block';
-        btn.firstElementChild.style.display = 
-        window.setTimeout(function()
+        this.firstElementChild.style.display = 'block';
+        this.firstElementChild.style.display = 
+        window.setTimeout(() =>
         {
-            btn.firstElementChild.style.display = '';
-            btn.currentlyDisabled = false;
+            this.firstElementChild.style.display = '';
+            this.currentlyDisabled = false;
         }, 2000);
     });
 }
@@ -89,9 +88,8 @@ let addTextLines = function(lines, cards, label)
 };
 function ExportText()
 {
-    var overlay = document.getElementById('toolbox-export-text').firstElementChild;
-    overlay.style.display = 'block';
-    RequestAllCardData(function(data)
+    this.firstElementChild.style.display = 'block';
+    RequestAllCardData((data) =>
     {
         var lines = [];
         addTextLines(lines, data.main, 'Main Deck');
@@ -100,7 +98,72 @@ function ExportText()
         
         SaveAs(getExportedFileName('.txt'), lines.join('\n'));
         
-        overlay.style.display = '';
+        this.firstElementChild.style.display = '';
+    });
+}
+
+let redditCmp = function(a,b)
+{
+    if (a[1] != b[1])
+        return b[1]-a[1];
+    return (a[0] < b[0]) ? -1 : 1;
+};
+let addRedditGroupLines = function(lines, pairs, label, doLabel)
+{
+    if (!pairs.length)
+        return;
+    let total = 0;
+    if (doLabel) for (const pair of pairs) total += pair[1];
+    if (doLabel) lines.push('    |- ' + label + ' (' + total + '):');
+    for (const pair of pairs) lines.push((doLabel ? '      |- ' : '    |- ') + pair[1] + 'x ' + pair[0]);
+};
+let addRedditLines = function(lines, cards, label, splitLabels)
+{
+    if (!cards.length)
+        return;
+    lines.push('    ' + label + ' (' + cards.length + '):');
+    let maps = [{},{},{}];
+    for (var i=0; i<cards.length; ++i)
+    {
+        var card = cards[i][1];
+        let t = 0;
+        console.log(card);
+        if (card.type === 'Spell Card')
+            t = 1;
+        else if (card.type === 'Trap Card')
+            t = 2;
+        
+        if (!(card.name in maps[t]))
+            maps[t][card.name] = 1;
+        else
+            maps[t][card.name] += 1;
+    }
+    
+    addRedditGroupLines(lines, Object.entries(maps[0]).sort(redditCmp), 'MONSTER CARDS', splitLabels);
+    addRedditGroupLines(lines, Object.entries(maps[1]).sort(redditCmp), 'SPELL CARDS', splitLabels);
+    addRedditGroupLines(lines, Object.entries(maps[2]).sort(redditCmp), 'TRAP CARDS', splitLabels);
+    lines.push('');
+};
+function ExportReddit()
+{
+    if (this.currentlyDisabled)
+        return;
+    this.currentlyDisabled = true;
+    this.firstElementChild.style.display = 'block';
+    RequestAllCardData((data) =>
+    {
+        var lines = [];
+        lines.push('**You can view this list interactively [here](' + document.location.href + ')!**');
+        lines.push('');
+        addRedditLines(lines, data.main, 'MAIN DECK', true);
+        addRedditLines(lines, data.extra, 'EXTRA DECK', false);
+        addRedditLines(lines, data.side, 'SIDE DECK', false);
+        
+        this.firstElementChild.style.display = '';
+        this.currentlyDisabled = false;
+        
+        document.getElementById('modal-copy-container').innerText = lines.join('\n');
+        ShowModal('modal-copyable');
     });
 }
 
@@ -282,6 +345,7 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('toolbox-copyurl').addEventListener("click", CopyURL);
     document.getElementById('toolbox-export-ydk').addEventListener("click", ExportYDK);
     document.getElementById('toolbox-export-text').addEventListener("click", ExportText);
+    document.getElementById('toolbox-export-reddit').addEventListener("click", ExportReddit);
     document.getElementById('toolbox-export-qr').addEventListener("click", ExportQRCode);
     
     document.getElementById('toolbox-price-load').addEventListener("click", LoadPriceBreakdown);

@@ -82,12 +82,12 @@ div.switch > div.switch-button
 }
 div.switch.enabled > div.switch-button { left: 20px; }
 
-div#modal-about, div#modal-privacy
+div#modal-about, div#modal-privacy, div#modal-copyable
 {
     width: 700px;
     height: 600px;
 }
-div#modal-about > div, div#modal-privacy > div
+div#modal-about > div, div#modal-privacy > div, div#modal-copyable > div#modal-copy-container
 {
     white-space: pre-wrap;
     
@@ -100,12 +100,15 @@ div#modal-about > div, div#modal-privacy > div
     bottom: 15px;
     padding: 10px;
     background: #cccccc;
+    
+    overflow-y: auto;
 }
 div#modal-about > div > b
 {
     font-family: Verdana, Geneva, sans-serif;
     font-size: 15px;
 }
+div#modal-copyable > div#modal-copy-container { overflow-x: auto; white-space: pre; }
 
 div#modal-qr
 {

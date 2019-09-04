@@ -31,6 +31,22 @@ let switch_to_setting = function(v, redraw)
 document.addEventListener("DOMContentLoaded",function()
 {
     document.getElementById('modal-background').addEventListener('click', function() { ShowModal(null); });
+    document.getElementById('modal-copy-button').addEventListener('click', function()
+    {
+        if (this.currentlyDisabled)
+            return;
+        this.currentlyDisabled = true;
+        navigator.clipboard.writeText(this.previousElementSibling.innerText).then(() =>
+        {
+            this.firstElementChild.style.display = 'block';
+            this.firstElementChild.style.display = 
+            window.setTimeout(() =>
+            {
+                this.firstElementChild.style.display = '';
+                this.currentlyDisabled = false;
+            }, 2000);
+        });
+    });
     
     var switches = document.getElementsByClassName('switch');
     var toggle = function()
