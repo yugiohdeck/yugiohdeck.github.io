@@ -79,12 +79,6 @@ let processCardData = function(id, data)
     else
         data.id = id;
     
-    if (data.id !== id)
-    {
-        data.status = false;
-        data.message = "Card ID mismatch";
-    }
-    
     if (data.status)
     {
         if (data.atk)
