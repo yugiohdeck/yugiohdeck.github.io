@@ -4,6 +4,17 @@ function UpdateZoomData(data)
         return;
     document.getElementById('zoom-name').innerText = data.name;
     document.getElementById('zoom-text').innerText = data.desc;
+    
+    const konamiId = data.konami_id;
+    if (konamiId)
+    {
+        var kdbBtn = document.getElementById('zoom-konamidb');
+        kdbBtn.href = 'https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=' + konamiId;
+        kdbBtn.style.display = '';
+        var ygorgBtn = document.getElementById('zoom-ygorgdb');
+        ygorgBtn.href = 'https://db.ygorganization.com/card#' + konamiId;
+        ygorgBtn.style.display = '';
+    }
 }
 
 var zoomedCard = null;
@@ -23,8 +34,8 @@ function ZoomThisCard()
         document.getElementById('zoom-image').firstChild.src = 'https://storage.googleapis.com/ygoprodeck.com/pics/' + id + '.jpg';
         document.getElementById('zoom-name').innerText = 'Loading...';
         document.getElementById('zoom-text').innerText = 'Loading card info from API...';
-        document.getElementById('zoom-konamidb-en').style.display = 'none';
-        document.getElementById('zoom-konamidb-jp').style.display = 'none';
+        document.getElementById('zoom-ygorgdb').style.display = 'none';
+        document.getElementById('zoom-konamidb').style.display = 'none';
         document.getElementById('zoom-yugipedia').href = 'https://yugipedia.com/wiki/' + id;
         RequestCardData(id, UpdateZoomData);
     }
