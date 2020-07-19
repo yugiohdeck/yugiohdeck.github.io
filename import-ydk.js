@@ -58,7 +58,10 @@ let doImportYDK = function()
         lastId = null;
     }
     
-    SetDeckData(main, extra, side, this.fileName);
+    let fileName = this.fileName;
+    if (fileName.endsWith('.ydk'))
+        fileName = fileName.substr(0,fileName.length - 4);
+    SetDeckData(main, extra, side, fileName);
     ImportFinished();
 };
 
