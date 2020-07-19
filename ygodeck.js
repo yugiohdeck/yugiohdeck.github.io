@@ -276,3 +276,5 @@ document.addEventListener("DOMContentLoaded",function()
     document.body.addEventListener('paste', HandlePaste);
     document.getElementById('import-box').addEventListener('click', function() { dummyInput.click(); });
 });
+
+window.addEventListener('hashchange', ReloadFromHashData);
