@@ -36,7 +36,7 @@ function ZoomThisCard()
         document.getElementById('zoom-text').innerText = 'Loading card info from API...';
         document.getElementById('zoom-ygorgdb').style.display = 'none';
         document.getElementById('zoom-konamidb').style.display = 'none';
-        document.getElementById('zoom-yugipedia').href = 'https://yugipedia.com/wiki/' + id;
+        document.getElementById('zoom-yugipedia').href = ('https://yugipedia.com/wiki/' + ('0000000'+id).slice(-8));
         RequestCardData(id, UpdateZoomData);
     }
     else
