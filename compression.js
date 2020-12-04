@@ -17,6 +17,12 @@ function CompressDeckData(data)
     {
         var cardCode = data[currentCardIndex][0];
         var cardCount = data[currentCardIndex][1];
+        if ((cardCode >> BITS_PER_CARD_CODE) || (cardCount >> BITS_PER_CARD_COUNT))
+        { // skip any cards that do not fit into 27+2 bits
+            currentCardIndex += 1;
+            nextBitInInput = 0;
+            continue;
+        }
         var currentCardNumData = ((cardCode << BITS_PER_CARD_COUNT) | Math.min(cardCount,(1 << BITS_PER_CARD_COUNT)-1));
         var bitsToWrite = Math.min(BITS_PER_CHAR - nextBitInOutput, (BITS_PER_CARD_CODE + BITS_PER_CARD_COUNT) - nextBitInInput);
         if (nextBitInInput)
