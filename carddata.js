@@ -81,26 +81,10 @@ let processCardData = function(id, data)
     
     if (data.status)
     {
-        if (data.atk)
-            data.atk = parseInt(data.atk);
-        if (data.def)
-            data.def = parseInt(data.def);
-        
-        if (data.level)
-            data.level = parseInt(data.level);
-        if (data.linkval)
-            data.linkval = parseInt(data.linkval);
-        if (data.scale)
-            data.scale = parseInt(data.scale);
-    
-        if (data.cardmarket_price)
-            data.cardmarket_price = parseFloat(data.cardmarket_price);
-        if (data.tcgplayer_price)
-            data.tcgplayer_price = parseFloat(data.tcgplayer_price);
-        if (data.ebay_price)
-            data.ebay_price = parseFloat(data.ebay_price);
-        if (data.amazon_price)
-            data.amazon_price = parseFloat(data.amazon_price);
+        if (data.card_prices && data.card_prices[0])
+            for (const key in data.card_prices[0])
+                data.card_prices[0][key] = parseFloat(data.card_prices[0][key]);
+
         _cardDataCache[id] = data;
     }
     
@@ -137,7 +121,7 @@ let cardDataSuccess = function()
             response = { status: false, message: response.error };
         else
         {
-            response = response[0][0];
+            response = response.data[0];
             response.status = true;
         }
         if (!response.status)
@@ -182,7 +166,7 @@ window.setInterval(function()
     var request = new XMLHttpRequest();
     request.addEventListener("load", cardDataSuccess);
     request.addEventListener("error", cardDataFailed);
-    request.open("GET", "https://db.ygoprodeck.com/api/v4/cardinfo.php?name=" + id, true);
+    request.open("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=" + id, true);
     request.cardId = id;
     request.send();
     

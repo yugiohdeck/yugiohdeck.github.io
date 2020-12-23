@@ -263,7 +263,7 @@ let updateCardPrice = function(data)
     {
         this.className = 'price-entry price-okay';
         this.nameElement.innerText = data.name;
-        this.priceAmount = data.cardmarket_price;
+        this.priceAmount = data.card_prices[0].cardmarket_price;
         this.priceElement.innerText = '€'+this.priceAmount.toFixed(2);
         this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
         this.cmLinkElement.href = 'https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name);
