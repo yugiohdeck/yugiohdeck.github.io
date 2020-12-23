@@ -10,7 +10,7 @@ let doImportYDK = function()
     var num;
     for (var i=0; i<lines.length; ++i)
     {
-        var line = lines[i];
+        var line = lines[i].trim();
         if ((line === lastId) && (num < 3))
         {
             ++num;
@@ -42,6 +42,7 @@ let doImportYDK = function()
         }
         else if (line.length && !line.startsWith('#'))
         {
+            console.log('Import aborted, invalid line:\n\''+line+'\'');
             ImportAborted();
             return;
         }
