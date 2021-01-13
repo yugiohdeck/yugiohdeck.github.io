@@ -134,7 +134,7 @@ let updateFromHashData = function()
     LoadDeck(hashData.decks.side, 'side');
     
     if (hashData.title)
-        document.title = hashData.title + ' - Deck Viewer';
+        document.title = hashData.title + ' – Deck Viewer';
     else
         document.title = 'Deck Viewer';
 };
