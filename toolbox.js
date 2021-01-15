@@ -196,7 +196,7 @@ function UpdatePriceTotal()
 
 let cardmarketEscape = function(name)
 {
-    return name.replace(/-/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-/,'').replace(/-$/,'');
+    return name.replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-/,'').replace(/-$/,'');
 };
 let createListEntry = function(cardName)
 {
