@@ -166,7 +166,7 @@ window.setInterval(function()
     var request = new XMLHttpRequest();
     request.addEventListener("load", cardDataSuccess);
     request.addEventListener("error", cardDataFailed);
-    request.open("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=" + id, true);
+    request.open("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=" + id + "&misc=yes&urls", true);
     request.cardId = id;
     request.send();
     

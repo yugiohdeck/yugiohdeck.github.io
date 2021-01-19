@@ -15,12 +15,16 @@ div#zoom-name
 {
     cursor: default;
     margin-top: 5px;
-    padding: 3px;
-    padding-left: 5px;
+    padding: 3px 5px;
+
     font-weight: bold;
     font-size: 18px;
+    height: 24px;
+    line-height: 24px;
     background: #999999;
     border-radius: 5px;
+    
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -43,7 +47,6 @@ div#zoom-links
     cursor: default;
     margin-top: 5px;
     height: 24px;
-    display: inline-block;
     float: right;
     background: #999999;
     border-radius: 5px;

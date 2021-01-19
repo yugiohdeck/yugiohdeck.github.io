@@ -86,11 +86,13 @@ div#import-subtext > span { color: #707070; }
 
 div#zoom-viewer
 {
-    visibility: hidden;
     position: absolute;
     top: 1vh;
     left: 1vh;
     right: calc(50% + 53vh);
+    bottom: 1vh;
+    overflow-y: auto;
+    
     padding: 1vh;
     background: #aaaaaa;
     border: 4px solid #777777;
@@ -183,7 +185,6 @@ div.card
     height:   14vh;
     cursor: zoom-in;
 }
-div.card.selected { cursor: zoom-out; }
 
 div.card > img
 {
