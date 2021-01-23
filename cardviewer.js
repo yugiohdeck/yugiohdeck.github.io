@@ -7,7 +7,7 @@ function UpdateZoomData(data)
     if (data.misc_info && data.misc_info[0] && !data.misc_info[0].has_effect)
         document.getElementById('zoom-text').style.fontStyle = 'italic';
     
-    var konamiId = data.konami_id;
+    var konamiId = (data.misc_info && data.misc_info[0] && data.misc_info[0].konami_id);
     if (konamiId)
     {
         var kdbBtn = document.getElementById('zoom-konamidb');
