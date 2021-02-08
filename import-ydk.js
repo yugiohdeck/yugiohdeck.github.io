@@ -68,6 +68,8 @@ let doImportYDK = function()
 
 RegisterFileTransferHandler(function(ydkFile)
 {
+    if (ydkFile.name.endsWith('.pdf'))
+        return;
     var reader = new FileReader();
     reader.fileName = ydkFile.name;
     reader.addEventListener('load',doImportYDK);

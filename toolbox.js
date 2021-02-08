@@ -127,7 +127,6 @@ let addRedditLines = function(lines, cards, label, splitLabels)
     {
         var card = cards[i][1];
         let t = 0;
-        console.log(card);
         if (card.type === 'Spell Card')
             t = 1;
         else if (card.type === 'Trap Card')
@@ -163,6 +162,47 @@ function ExportReddit()
         this.currentlyDisabled = false;
         
         document.getElementById('modal-copy-container').innerText = lines.join('\n');
+        ShowModal('modal-copyable');
+    });
+}
+
+let getKonamiList = function(deck)
+{
+    let maps = [{},{},{}];
+    for (var i=0; i<deck.length; ++i)
+    {
+        var card = deck[i][1];
+        let t = 0;
+        if (card.type === 'Spell Card')
+            t = 1;
+        else if (card.type === 'Trap Card')
+            t = 2;
+        
+        if (!(card.name in maps[t]))
+            maps[t][card.name] = 1;
+        else
+            maps[t][card.name] += 1;
+    }
+    return maps.map((m) => Object.entries(m));
+};
+function ExportKonami()
+{
+    RequestAllCardData((data) =>
+    {
+        let mainMaps = getKonamiList(data.main);
+        document.getElementById('modal-copy-container').innerText = (
+            'function put(pre,data) {\n'+
+            '  for (let i=0; i<data.length; ++i) {\n'+
+            '    document.getElementById(pre+\'nm_\'+(i+1)).value = data[i][0];\n'+
+            '    document.getElementById(pre+\'num_\'+(i+1)).value = data[i][1];\n'+
+            '  }\n'+
+            '}\n'+
+            'put(\'mo\','+JSON.stringify(mainMaps[0])+');\n'+
+            'put(\'sp\','+JSON.stringify(mainMaps[1])+');\n'+
+            'put(\'tr\','+JSON.stringify(mainMaps[2])+');\n'+
+            'put(\'ex\','+JSON.stringify(getKonamiList(data.extra).flat())+');\n'+
+            'put(\'si\','+JSON.stringify(getKonamiList(data.side).flat())+');\n'
+        );
         ShowModal('modal-copyable');
     });
 }
