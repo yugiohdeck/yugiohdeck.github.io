@@ -4,6 +4,7 @@ const defaultSettings =
     'stackDuplicates': false,
     'highResCards': false,
     'alwaysLoadPrices': false,
+    'ocgBanlist': false,
 };
 
 let storagekey = function(key) { return 'config-'+key; }

@@ -82,7 +82,7 @@ function LimitedCallback(data)
 {
     if (data.status)
     {
-        const ban = (data.banlist_info && data.banlist_info.ban_tcg);
+        const ban = (data.banlist_info && data.banlist_info[GetUserSettingBool('ocgBanlist') ? 'ban_ocg' : 'ban_tcg']);
         switch (ban)
         {
             case 'Forbidden':
