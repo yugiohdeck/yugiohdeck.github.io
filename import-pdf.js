@@ -9,7 +9,7 @@ let addScript = function(path)
     return p;
 }
 
-/*let doImportPDF = async function()
+let doImportPDF = async function()
 {
     if (!window.pdfjsLib)
     {
@@ -19,11 +19,12 @@ let addScript = function(path)
     const PDFJS = window.pdfjsLib;
     PDFJS.GlobalWorkerOptions.workerSrc = 'include/pdf.worker.js';
     const d = await PDFJS.getDocument(this.result).promise;
-    console.log(d.numPages);
-    console.log(await d.getPage(1));
+    const p = await d.getPage(1);
     console.log(d);
-};*/
-let doImportPDF = function() { ImportAborted('NYI'); }
+    console.log(p);
+    console.log(await d.getDestinations());
+    console.log(await p.getAnnotations());
+};
 
 RegisterFileTransferHandler(function(file)
 {

@@ -35,6 +35,8 @@ function UpdateDeckCardLayout(container)
     var stackLTR = GetUserSettingBool('stackLTR'); // true for rightmost card in front of stack, false for leftmost card
     var stackDuplicates = GetUserSettingBool('stackDuplicates'); // true to stack subsequent identical cards
     
+    document.body.classList.toggle('stack-ltr', stackLTR);
+    
     var previousId = null;
     for (var factor = 1.0; factor > 0; factor *= 0.98)
     {
@@ -76,6 +78,34 @@ function UpdateAllDeckLayouts()
     UpdateDeckCardLayout(document.getElementById('side-deck-container'));
 }
 
+function LimitedCallback(data)
+{
+    if (data.status)
+    {
+        const ban = (data.banlist_info && data.banlist_info.ban_tcg);
+        switch (ban)
+        {
+            case 'Forbidden':
+                this.src = 'limited_0.png';
+                break;
+            case 'Limited':
+                this.src = 'limited_1.png';
+                break;
+            case 'Semi-Limited':
+                this.src = 'limited_2.png';
+                break;
+            default:
+                return;
+        }
+        this.title = ban;
+    }
+    else
+    {
+        this.src = 'limited_0.png';
+        this.title = 'Failed to retrieve Forbidden & Limited List status';
+    }
+}
+
 function MakeDOMCard(id)
 {
     var main = document.createElement('div');
@@ -89,6 +119,15 @@ function MakeDOMCard(id)
     else
         pic.src = 'https://storage.googleapis.com/ygoprodeck.com/pics_small/' + id + '.jpg';
     main.appendChild(pic);
+    
+    var limited = document.createElement('div');
+    limited.className = 'limited';
+    main.appendChild(limited);
+    
+    var limitedPic = document.createElement('img');
+    limited.appendChild(limitedPic);
+    
+    RequestCardData(id, LimitedCallback, limitedPic);
     
     return main;
 }
@@ -137,6 +176,9 @@ let updateFromHashData = function()
         document.title = hashData.title + ' – Deck Viewer';
     else
         document.title = 'Deck Viewer';
+        
+    if (GetUserSettingBool('alwaysLoadPrices'))
+        LoadPriceBreakdown();
 };
 
 function SetDeckTitle(title) { hashData.title = (title && title.length) ? title : null; HashDataChanged(); }

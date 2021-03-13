@@ -7,7 +7,6 @@ const REQUEST_THROTTLE_DATA = 100;
 let _cardDataCache = {};
 let _cardDataRequests = [];
 let _cardDataCallbacks = {};
-let _cardDataLastRequest = null;
 
 function RequestCardData(id, callback, ctx)
 {
@@ -28,8 +27,6 @@ function RequestCardData(id, callback, ctx)
     
     if (callback)
         _cardDataCallbacks[id].push([callback,ctx]);
-    
-    _cardDataLastRequest = id;
 }
 
 let _allCardDataCallbacks = [];
@@ -92,7 +89,10 @@ let processCardData = function(id, data)
     for (var i=0; i<callbacks.length; ++i)
         callbacks[i][0].call(callbacks[i][1], data);
     delete _cardDataCallbacks[id];
-    
+};
+
+let tryProcessAllCardData = function()
+{
     if (_allCardDataCallbacks.length && !Object.keys(_cardDataCallbacks).length)
     {
         var allData = { success: true, main: [], extra: [], side: [] };
@@ -120,10 +120,7 @@ let cardDataSuccess = function()
         if (response.error)
             response = { status: false, message: response.error };
         else
-        {
-            response = response.data[0];
             response.status = true;
-        }
         if (!response.status)
             console.error("Price API failed", this);
     }
@@ -133,41 +130,56 @@ let cardDataSuccess = function()
         console.error("Price API parsing failed", e);
     }
     
-    processCardData(this.cardId, response);
+    if (response.status)
+    {
+        const idMap = {};
+        for (const cardId of this.cardIds)
+            idMap[cardId] = false;
+        for (const entry of response.data)
+        {
+            entry.status = true;
+            processCardData(entry.id, entry);
+            idMap[entry.id] = true;
+        }
+        for (const cardId of this.cardIds)
+        {
+            if (!idMap[cardId])
+                processCardData(cardId, { status: false, message: "Not found" });
+        }
+    }
+    else
+    {
+        for (const cardId of this.cardIds)
+            processCardData(cardId, response);
+    }
+    tryProcessAllCardData();
 };
 
 let cardDataFailed = function()
 {
     var resp = { status: false, message: "XHR failed" };
     console.error("Data API failed", this);
-    processCardData(this.cardId, response);
+    for (const cardId of this.cardIds)
+        processCardData(cardId, response);
 };
 
 window.setInterval(function()
 {
-    var id = null;
-    if (_cardDataLastRequest)
+    if (!_cardDataRequests.length)
+        return;
+    var ids = _cardDataRequests.splice(-20,20).filter((id) =>
     {
-        id = _cardDataLastRequest;
-        _cardDataLastRequest = null;
-    }
-    else
-        while (!id)
-        {
-            if (!_cardDataRequests.length)
-                return;
-            id = _cardDataRequests.pop();
-            if (id in _cardDataCache)
-                id = null;
-        }
-    
-    _cardDataCache[id] = null;
+        if (id in _cardDataCache)
+            return false;
+        _cardDataCache[id] = null;
+        return true;
+    });
     
     var request = new XMLHttpRequest();
     request.addEventListener("load", cardDataSuccess);
     request.addEventListener("error", cardDataFailed);
-    request.open("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=" + id + "&misc=yes&urls", true);
-    request.cardId = id;
+    request.open("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=" + ids.join(',') + "&misc=yes&urls", true);
+    request.cardIds = ids;
     request.send();
     
 }, REQUEST_THROTTLE_DATA);

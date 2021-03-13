@@ -3,6 +3,7 @@ const defaultSettings =
     'stackLTR': false,
     'stackDuplicates': false,
     'highResCards': false,
+    'alwaysLoadPrices': false,
 };
 
 let storagekey = function(key) { return 'config-'+key; }
