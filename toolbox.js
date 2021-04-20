@@ -231,7 +231,7 @@ function UpdatePriceTotal()
         if (el.priceAmount < Infinity)
             total += el.priceAmount * el.count;
     }
-    document.getElementById('toolbox-price-list').firstElementChild.priceElement.innerText = '€' + total.toFixed(2);
+    document.getElementById('toolbox-price-list').firstElementChild.priceElement.innerText = (GetUserSettingBool('useTcgplayerPrices') ? '$' : '€') + total.toFixed(2);
 }
 
 let cardmarketEscape = function(name)
@@ -303,8 +303,16 @@ let updateCardPrice = function(data)
     {
         this.className = 'price-entry price-okay';
         this.nameElement.innerText = data.name;
-        this.priceAmount = data.card_prices[0].cardmarket_price;
-        this.priceElement.innerText = '€'+this.priceAmount.toFixed(2);
+        if (GetUserSettingBool('useTcgplayerPrices'))
+        {
+            this.priceAmount = data.card_prices[0].tcgplayer_price;
+            this.priceElement.innerText = '$'+this.priceAmount.toFixed(2);
+        }
+        else
+        {
+            this.priceAmount = data.card_prices[0].cardmarket_price;
+            this.priceElement.innerText = '€'+this.priceAmount.toFixed(2);
+        }
         this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
         this.cmLinkElement.href = (data.cardmarket_url || ('https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name)));
 

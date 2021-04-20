@@ -3,6 +3,7 @@ const defaultSettings =
     'stackLTR': false,
     'stackDuplicates': false,
     'highResCards': false,
+    'useTcgplayerPrices': false,
     'alwaysLoadPrices': false,
     'ocgBanlist': false,
 };
