@@ -85,6 +85,7 @@ function LimitedCallback(data)
         const ban = (data.banlist_info && data.banlist_info[GetUserSettingBool('ocgBanlist') ? 'ban_ocg' : 'ban_tcg']);
         switch (ban)
         {
+            case 'Banned':
             case 'Forbidden':
                 this.src = 'limited_0.png';
                 break;
