@@ -41,6 +41,7 @@ div#zoom-viewer
     top: 0.70vw;
     left: 0.70vw;
     right: calc(50% + 37.10vw);
+    bottom: 0.70vw;
     padding: 0.70vw;
 }
 div.deck
@@ -78,4 +79,15 @@ div.card
 {
     width:    7.00vw;
     height:   9.80vw;
+}
+div.card > div.limited
+{
+    top: 0.03vw;
+    right: 0.03vw;
+    width: 2.10vw;
+    height: 2.10vw;
+}
+body.stack-ltr div.card > div.limited
+{
+    left: 0.03vw;
 }
