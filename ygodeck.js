@@ -107,6 +107,27 @@ function LimitedCallback(data)
     }
 }
 
+function LimitedCallbackOrgDB(data)
+{
+    const cardData = data.cardData[GetUserSettingBool('ocgBanlist') ? 'ja' : 'en'];
+    const allowed = (
+        (!cardData || (cardData.thisSrc.type !== 2)) ? 0 :
+        isNaN(cardData.banlistStatus) ? 3 :
+        cardData.banlistStatus
+    );
+    if (allowed < 3)
+    {
+        this.src = ('limited_'+allowed+'.png');
+        this.title = ('Maximum copies: '+allowed);
+    }
+}
+
+function LimitedCallbackOrgDBFailed(e)
+{
+    this.src = 'limited_0.png';
+    this.title = ('Failed to retrieve Forbidden & Limited List status:\n- '+e);
+}
+
 function MakeDOMCard(id)
 {
     var main = document.createElement('div');
@@ -128,7 +149,10 @@ function MakeDOMCard(id)
     var limitedPic = document.createElement('img');
     limited.appendChild(limitedPic);
     
-    RequestCardData(id, LimitedCallback, limitedPic);
+    if (GetUserSettingBool('konamiDBData'))
+        window.RequestOrgDBData(id).then(LimitedCallbackOrgDB.bind(limitedPic)).catch(LimitedCallbackOrgDBFailed.bind(limitedPic));
+    else
+        RequestCardData(id, LimitedCallback, limitedPic);
     
     return main;
 }

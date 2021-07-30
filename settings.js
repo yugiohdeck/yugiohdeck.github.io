@@ -6,6 +6,7 @@ const defaultSettings =
     'useTcgplayerPrices': false,
     'alwaysLoadPrices': false,
     'ocgBanlist': false,
+    'konamiDBData': false,
 };
 
 let storagekey = function(key) { return 'config-'+key; }
