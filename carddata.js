@@ -86,6 +86,8 @@ let processCardData = function(id, data)
     }
     
     var callbacks = _cardDataCallbacks[id];
+    if (!callbacks)
+        return;
     for (var i=0; i<callbacks.length; ++i)
         callbacks[i][0].call(callbacks[i][1], data);
     delete _cardDataCallbacks[id];
@@ -140,6 +142,13 @@ let cardDataSuccess = function()
             entry.status = true;
             processCardData(entry.id, entry);
             idMap[entry.id] = true;
+            
+            const betaId = (entry.misc_info && entry.misc_info[0] && entry.misc_info[0].beta_id);
+            if (betaId)
+            {
+                processCardData(betaId, entry);
+                idMap[betaId] = true;
+            }
         }
         for (const cardId of this.cardIds)
         {

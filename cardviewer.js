@@ -1,6 +1,18 @@
+function CardHasId(data, id)
+{
+    if (data.id === id)
+        return true;
+    const betaId = (data.misc_info && data.misc_info[0] && data.misc_info[0].beta_id);
+    if (betaId && (data.id === betaId))
+        return true;
+    
+    return false;
+}
+
 function UpdateZoomData(data)
 {
-    if (document.getElementById('zoom-viewer').zoomedCardId != data.id)
+    const targetId = document.getElementById('zoom-viewer').zoomedCardId;
+    if (CardHasId(data, targetId))
         return;
     if (!data.status)
     {
@@ -14,6 +26,13 @@ function UpdateZoomData(data)
     document.getElementById('zoom-text').innerText = data.desc;
     if (data.misc_info && data.misc_info[0] && !data.misc_info[0].has_effect)
         document.getElementById('zoom-text').style.fontStyle = 'italic';
+    
+    if (data.id !== targetId)
+    {
+        const pediaBtn = document.getElementById('zoom-yugipedia');
+        pediaBtn.href = ('https://yugipedia.com/wiki/' + ('0000000'+data.id).slice(-8));
+        pediaBtn.style.visibility = '';
+    }
     
     var konamiId = (data.misc_info && data.misc_info[0] && data.misc_info[0].konami_id);
     if (konamiId)
@@ -93,8 +112,13 @@ function ZoomThisCard()
         document.getElementById('zoom-text').style.fontStyle = '';
         document.getElementById('zoom-ygorgdb').style.visibility = 'hidden';
         document.getElementById('zoom-konamidb').style.visibility = 'hidden';
-        document.getElementById('zoom-yugipedia').href = ('https://yugipedia.com/wiki/' + ('0000000'+id).slice(-8));
-        document.getElementById('zoom-yugipedia').style.visibility = '';
+        if ((''+id).length <= 8)
+        {
+            document.getElementById('zoom-yugipedia').href = ('https://yugipedia.com/wiki/' + ('0000000'+id).slice(-8));
+            document.getElementById('zoom-yugipedia').style.visibility = '';
+        }
+        else
+            document.getElementById('zoom-yugipedia').style.visibility = 'hidden';
         
         if (GetUserSettingBool('konamiDBData'))
         {
