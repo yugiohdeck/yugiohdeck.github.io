@@ -1,9 +1,9 @@
 function CardHasId(data, id)
 {
-    if (data.id === id)
+    if (id === data.id)
         return true;
     const betaId = (data.misc_info && data.misc_info[0] && data.misc_info[0].beta_id);
-    if (betaId && (data.id === betaId))
+    if (betaId && (id === betaId))
         return true;
     
     return false;
@@ -12,7 +12,7 @@ function CardHasId(data, id)
 function UpdateZoomData(data)
 {
     const targetId = document.getElementById('zoom-viewer').zoomedCardId;
-    if (CardHasId(data, targetId))
+    if (!CardHasId(data, targetId))
         return;
     if (!data.status)
     {
