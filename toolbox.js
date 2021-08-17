@@ -335,11 +335,13 @@ let updateCardPrice = function(data)
 			
 			this.ygopIconElement.src = 'https://www.tcgplayer.com/favicon.ico';
 			this.ygopLinkElement.href = tcgplayerURL.href;
+			this.ygopLinkElement.title = 'View card on tcgplayer.com';
 		}
 		else
 		{
 			this.ygopIconElement.src = 'https://yugiohprices.com/img/favicon.png';
 			this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
+			this.ygopLinkElement.title = 'View card on yugiohprices.com';
 		}
 		
         var cardmarketURL = new URL(data.cardmarket_url || ('https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name)));
