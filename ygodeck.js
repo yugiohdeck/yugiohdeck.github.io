@@ -344,4 +344,24 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('import-box').addEventListener('click', function() { dummyInput.click(); });
 });
 
+window.addEventListener('message', function(e)
+{
+	switch (e.data.type)
+	{
+		case 'injectCSSFile':
+		{
+			var elm = document.createElement('link');
+			elm.rel = 'stylesheet';
+			elm.href = e.data.cssFile;
+			document.head.appendChild(elm);
+			break;
+		}
+		case 'setAffiliates':
+		{
+			window.cardmarketAffiliate = e.data.cardmarketAffiliate;
+			break;
+		}
+	}
+});
+
 window.addEventListener('hashchange', ReloadFromHashData);
