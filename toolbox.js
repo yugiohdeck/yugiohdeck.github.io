@@ -12,21 +12,39 @@ function SaveAs(filename, content)
     document.body.removeChild(a);
 }
 
+function CopyURLFailed()
+{
+    const button = document.getElementById('toolbox-copyurl');
+    button.firstElementChild.innerText = 'Failed 😔\uFE0E';
+    button.firstElementChild.style.display = 'block';
+    window.setTimeout(() =>
+    {
+        button.firstElementChild.style.display = '';
+        button.currentlyDisabled = false;
+    }, 2000);
+}
+
 function CopyURL()
 {
     if (this.currentlyDisabled)
         return;
+    
     this.currentlyDisabled = true;
+    if (!navigator.clipboard)
+    {
+        CopyURLFailed();
+        return;
+    }
     navigator.clipboard.writeText(document.location.href).then(() =>
     {
+        this.firstElementChild.innerText = 'Copied!';
         this.firstElementChild.style.display = 'block';
-        this.firstElementChild.style.display = 
         window.setTimeout(() =>
         {
             this.firstElementChild.style.display = '';
             this.currentlyDisabled = false;
         }, 2000);
-    });
+    }, CopyURLFailed);
 }
 
 let getExportedFileName = function(ending)
