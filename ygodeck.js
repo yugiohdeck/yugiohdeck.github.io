@@ -346,22 +346,16 @@ document.addEventListener("DOMContentLoaded",function()
 
 window.addEventListener('message', function(e)
 {
-	switch (e.data.type)
+	if ('cssFile' in e.data)
 	{
-		case 'injectCSSFile':
-		{
-			var elm = document.createElement('link');
-			elm.rel = 'stylesheet';
-			elm.href = e.data.cssFile;
-			document.head.appendChild(elm);
-			break;
-		}
-		case 'setAffiliates':
-		{
-			window.cardmarketAffiliate = e.data.cardmarketAffiliate;
-			break;
-		}
+		var elm = document.createElement('link');
+		elm.rel = 'stylesheet';
+		elm.href = e.data.cssFile;
+		document.head.appendChild(elm);
 	}
+	
+	if ('tcgplayerAffiliate' in e.data)
+		window.tcgplayerAffiliate = e.data.tcgplayerAffiliate;
 });
 
 window.addEventListener('hashchange', ReloadFromHashData);
