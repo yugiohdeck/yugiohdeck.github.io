@@ -143,6 +143,18 @@ let cardDataSuccess = function()
             processCardData(entry.id, entry);
             idMap[entry.id] = true;
             
+            /*
+                workaround for ygoprodeck api bug, re-check/remove later
+                if you get two entries on path https://db.ygoprodeck.com/api/v7/cardinfo.php?id=55878038,55878039 this workaround is no longer needed
+                also remove the matching workaround from cardviewer.js
+            */
+            for (const {id} of entry.card_images)
+            {
+                if (id === entry.id) continue;
+                processCardData(id, entry);
+                idMap[id] = true;
+            }
+            
             const betaId = (entry.misc_info && entry.misc_info[0] && entry.misc_info[0].beta_id);
             if (betaId)
             {

@@ -332,42 +332,45 @@ let updateCardPrice = function(data)
             this.priceAmount = data.card_prices[0].cardmarket_price;
             this.priceElement.innerText = '€'+this.priceAmount.toFixed(2);
         }
+
+        try
+        {
+            var tcgplayerURL = new URL(data.tcgplayer_url);
+            if (window.tcgplayerAffiliate)
+            {
+                tcgplayerURL.searchParams.set('utm_campaign', 'affiliate');
+                tcgplayerURL.searchParams.set('partner', window.tcgplayerAffiliate);
+                tcgplayerURL.searchParams.set('utm_medium', window.tcgplayerAffiliate);
+                tcgplayerURL.searchParams.set('utm_source', window.tcgplayerAffiliate);
+            }
+            else
+            {
+                tcgplayerURL.searchParams.delete('utm_campaign');
+                tcgplayerURL.searchParams.delete('partner');
+                tcgplayerURL.searchParams.delete('utm_medium');
+                tcgplayerURL.searchParams.delete('utm_source');
+            }
+            
+            this.ygopIconElement.src = 'https://www.tcgplayer.com/favicon.ico';
+            this.ygopLinkElement.href = tcgplayerURL.href;
+            this.ygopLinkElement.title = 'View card on tcgplayer.com';
+        } catch (e) {
+            this.ygopIconElement.src = 'https://yugiohprices.com/img/favicon.png';
+            this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
+            this.ygopLinkElement.title = 'View card on yugiohprices.com';
+        }
 		
-		if (data.tcgplayer_url)
-		{
-			var tcgplayerURL = new URL(data.tcgplayer_url);
-			if (window.tcgplayerAffiliate)
-			{
-				tcgplayerURL.searchParams.set('utm_campaign', 'affiliate');
-				tcgplayerURL.searchParams.set('partner', window.tcgplayerAffiliate);
-				tcgplayerURL.searchParams.set('utm_medium', window.tcgplayerAffiliate);
-				tcgplayerURL.searchParams.set('utm_source', window.tcgplayerAffiliate);
-			}
-			else
-			{
-				tcgplayerURL.searchParams.delete('utm_campaign');
-				tcgplayerURL.searchParams.delete('partner');
-				tcgplayerURL.searchParams.delete('utm_medium');
-				tcgplayerURL.searchParams.delete('utm_source');
-			}
-			
-			this.ygopIconElement.src = 'https://www.tcgplayer.com/favicon.ico';
-			this.ygopLinkElement.href = tcgplayerURL.href;
-			this.ygopLinkElement.title = 'View card on tcgplayer.com';
-		}
-		else
-		{
-			this.ygopIconElement.src = 'https://yugiohprices.com/img/favicon.png';
-			this.ygopLinkElement.href = 'https://yugiohprices.com/card_price?name=' + encodeURIComponent(data.name);
-			this.ygopLinkElement.title = 'View card on yugiohprices.com';
-		}
-		
-        var cardmarketURL = new URL(data.cardmarket_url || ('https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name)));
-		cardmarketURL.searchParams.delete('utm_source');
-		cardmarketURL.searchParams.delete('utm_medium');
-		cardmarketURL.searchParams.delete('utm_campaign');
-			
-		this.cmLinkElement.href = cardmarketURL.href;
+        try
+        {
+            var cardmarketURL = new URL(data.cardmarket_url || ('https://www.cardmarket.com/en/YuGiOh/Cards/' + cardmarketEscape(data.name)));
+            cardmarketURL.searchParams.delete('utm_source');
+            cardmarketURL.searchParams.delete('utm_medium');
+            cardmarketURL.searchParams.delete('utm_campaign');
+                
+            this.cmLinkElement.href = cardmarketURL.href;
+        } catch (e) {
+            this.cmLinkElement.href = '';
+        }
 
         var siblings = this.parentElement.children;
         var i;

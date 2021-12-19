@@ -152,6 +152,8 @@ div.price-entry > div.price-link-cm
 }
 div.price-entry.price-okay > div.price-link-cm { display: block; }
 
+div.price-link-cm > a[href=''] { display: none; }
+
 div.price-entry > div.price-progress
 {
     display: none;

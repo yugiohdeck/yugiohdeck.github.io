@@ -2,6 +2,15 @@ function CardHasId(data, id)
 {
     if (id === data.id)
         return true;
+    
+    /*
+        workaround for ygoprodeck api bug, re-check/remove later
+        if you get two entries on path https://db.ygoprodeck.com/api/v7/cardinfo.php?id=55878038,55878039 this workaround is no longer needed
+        also remove the matching workaround from carddata.js
+    */
+    if (data.card_images.find((e) => (e.id === id)))
+        return true;
+
     const betaId = (data.misc_info && data.misc_info[0] && data.misc_info[0].beta_id);
     if (betaId && (id === betaId))
         return true;
