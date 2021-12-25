@@ -80,7 +80,7 @@ function UpdateZoomDataOrgDB(passcode, data)
         return;
     }
     
-    document.getElementById('zoom-image').firstChild.src = ('https://db.ygorganization.com/artwork/'+data.cardId+'/'+data.artworks[0]);
+    document.getElementById('zoom-image').firstChild.src = ('https://db.ygorganization.com/artwork/card/'+data.cardId+'/'+data.artworks[0]);
     document.getElementById('zoom-name').innerText = cardData.name;
     
     if (cardData.pendulumEffectText)
