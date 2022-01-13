@@ -19,7 +19,15 @@ function SetUserSetting(key, val)
         return;
     }
     
-    window.localStorage.setItem(storagekey(key), val);
+    try
+    {
+        window.localStorage.setItem(storagekey(key), val);
+    } catch (e) {
+        if ((e instanceof DOMException) && (e.name === 'SecurityError'))
+            console.log('LocalStorage access is denied', e);
+        else
+            throw e;
+    }
 }
 
 function ClearUserSetting(key)
@@ -30,7 +38,15 @@ function ClearUserSetting(key)
         return;
     }
     
-    window.localStorage.removeItem(storagekey(key));
+    try
+    {
+        window.localStorage.removeItem(storagekey(key));
+    } catch (e) {
+        if ((e instanceof DOMException) && (e.name === 'SecurityError'))
+            console.log('LocalStorage access is denied', e);
+        else
+            throw e;
+    }
 }
 
 function GetUserSetting(key)
@@ -41,11 +57,22 @@ function GetUserSetting(key)
         return null;
     }
     
-    var val = window.localStorage.getItem(storagekey(key));
-    if (val === null)
-        return String(defaultSettings[key]);
-    else
-        return val;
+    try
+    {
+        var val = window.localStorage.getItem(storagekey(key));
+        if (val === null)
+            return String(defaultSettings[key]);
+        else
+            return val;
+    } catch (e) {
+        if ((e instanceof DOMException) && (e.name === 'SecurityError'))
+        {
+            console.log('LocalStorage access is denied', e);
+            return String(defaultSettings[key]);
+        }
+        else
+            throw e;
+    }
 }
 
 function GetUserSettingBool(key)

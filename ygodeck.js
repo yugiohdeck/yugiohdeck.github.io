@@ -346,6 +346,9 @@ document.addEventListener("DOMContentLoaded",function()
 
 window.addEventListener('message', function(e)
 {
+    if (e.source !== window.parent)
+        return;
+
 	if ('cssFile' in e.data)
 	{
 		var elm = document.createElement('link');
@@ -356,6 +359,25 @@ window.addEventListener('message', function(e)
 	
 	if ('tcgplayerAffiliate' in e.data)
 		window.tcgplayerAffiliate = e.data.tcgplayerAffiliate;
+    
+    if ('getDeckInfo' in e.data)
+        e.source.postMessage({ deckInfo: hashData }, e.origin);
+        
+    const newDeckInfo = e.data.setDeckInfo;
+    if (newDeckInfo)
+    {
+        const oldDeckInfo = hashData;
+        try
+        {
+            hashData = newDeckInfo;
+            HashDataChanged();
+        } catch (e) {
+            console.error('Your deck info is broken, so we aborted the load. Here\'s the error message:');
+            console.error(e);
+            document.location.hash = '';
+            ReloadFromHashData();
+        }
+    }
 });
 
 window.addEventListener('hashchange', ReloadFromHashData);
