@@ -30,7 +30,7 @@ function ImportAborted()
 {
     if (!IsImportInProgress())
         return;
-    var status = document.getElementById('import-status')
+    var status = document.getElementById('import-status');
     status.innerText = ('Import failed');
     status.className = 'import-error';
     window.setTimeout(ImportFinished, 2000);

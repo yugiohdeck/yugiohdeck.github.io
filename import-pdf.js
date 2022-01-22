@@ -11,7 +11,9 @@ let addScript = function(path)
 
 let doImportPDF = async function()
 {
-    if (!window.pdfjsLib)
+    ImportAborted();
+    document.getElementById('import-status').innerText = 'PDF unsupported - are you looking for yugioh-deckcheck.github.io?';
+    /*if (!window.pdfjsLib)
     {
         await addScript('include/pdf.js');
         //addScript('include/pdf.worker.js');
@@ -23,7 +25,7 @@ let doImportPDF = async function()
     console.log(d);
     console.log(p);
     console.log(await d.getDestinations());
-    console.log(await p.getAnnotations());
+    console.log(await p.getAnnotations());*/
 };
 
 RegisterFileTransferHandler(function(file)
