@@ -67,6 +67,7 @@ function FailedZoomDataOrgDB(passcode, err)
     document.getElementById('zoom-text').innerText = ('Failed to get card data:\n-'+err);
 }
 
+const artworkManifest = fetch('https://artworks.db.ygorganization.com/manifest.json').then(r => r.json());
 function UpdateZoomDataOrgDB(passcode, data)
 {
     const viewer = document.getElementById('zoom-viewer');
@@ -80,7 +81,17 @@ function UpdateZoomDataOrgDB(passcode, data)
         return;
     }
     
-    document.getElementById('zoom-image').firstChild.src = ('https://db.ygorganization.com/artwork/card/'+data.cardId+'/'+data.artworks[0]);
+    artworkManifest.then((manifest) =>
+    {
+        if (viewer.zoomedCardId !== passcode)
+            return;
+        for (const artworkId in manifest.cards[data.cardId])
+        {
+            const artworkData = manifest.cards[data.cardId][artworkId];
+            document.getElementById('zoom-image').firstChild.src = ('https://artworks.db.ygorganization.com' + (artworkData.bestTCG || artworkData.bestOCG));
+            break;
+        }
+    });
     document.getElementById('zoom-name').innerText = cardData.name;
     
     if (cardData.pendulumEffectText)
