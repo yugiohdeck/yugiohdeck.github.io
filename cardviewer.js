@@ -67,7 +67,7 @@ function FailedZoomDataOrgDB(passcode, err)
     document.getElementById('zoom-text').innerText = ('Failed to get card data:\n-'+err);
 }
 
-const artworkManifest = fetch('https://artworks.db.ygorganization.com/manifest.json').then(r => r.json());
+const artworkManifest = fetch('https://artworks.ygorganization.com/manifest.json').then(r => r.json());
 function UpdateZoomDataOrgDB(passcode, data)
 {
     const viewer = document.getElementById('zoom-viewer');
@@ -88,7 +88,7 @@ function UpdateZoomDataOrgDB(passcode, data)
         for (const artworkId in manifest.cards[data.cardId])
         {
             const artworkData = manifest.cards[data.cardId][artworkId];
-            document.getElementById('zoom-image').firstChild.src = ('https://artworks.db.ygorganization.com' + (artworkData.bestTCG || artworkData.bestOCG));
+            document.getElementById('zoom-image').firstChild.src = ('https://artworks.ygorganization.com' + (artworkData.bestTCG || artworkData.bestOCG));
             break;
         }
     });
