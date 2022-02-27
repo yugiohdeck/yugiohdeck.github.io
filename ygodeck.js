@@ -210,8 +210,12 @@ function SetDeckTitle(title) { hashData.title = (title && title.length) ? title 
 function GetDeckTitle() { return hashData.title; }
 function SetDeckData(main, extra, side, title) { hashData.decks.main = main; hashData.decks.extra = extra; hashData.decks.side = side; SetDeckTitle(title); }
 
+let updateSubscriber = null;
 function HashDataChanged()
 {
+    if (updateSubscriber !== null)
+        updateSubscriber[0].postMessage({deckInfo: hashData}, updateSubscriber[1]);
+    
     if (!hashData.decks.main)
     {
         document.location.hash = '';
@@ -362,6 +366,9 @@ window.addEventListener('message', function(e)
     
     if ('getDeckInfo' in e.data)
         e.source.postMessage({ deckInfo: hashData }, e.origin);
+    
+    if ('requestDeckInfoUpdate' in e.data)
+        updateSubscriber = [e.source, e.origin];
         
     const newDeckInfo = e.data.setDeckInfo;
     if (newDeckInfo)
