@@ -146,7 +146,7 @@ function ZoomThisCard()
         }
         else
         {
-            document.getElementById('zoom-image').firstChild.src = 'https://storage.googleapis.com/ygoprodeck.com/pics/' + id + '.jpg';
+            document.getElementById('zoom-image').firstChild.src = 'https://images.ygoprodeck.com/images/cards/' + id + '.jpg';
             RequestCardData(id, UpdateZoomData);
         }
     }

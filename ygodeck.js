@@ -137,9 +137,9 @@ function MakeDOMCard(id)
     
     var pic = document.createElement('img');
     if (GetUserSettingBool('highResCards'))
-        pic.src = 'https://storage.googleapis.com/ygoprodeck.com/pics/' + id + '.jpg';
+        pic.src = 'https://images.ygoprodeck.com/images/cards/' + id + '.jpg';
     else
-        pic.src = 'https://storage.googleapis.com/ygoprodeck.com/pics_small/' + id + '.jpg';
+        pic.src = 'https://images.ygoprodeck.com/images/cards_small/' + id + '.jpg';
     main.appendChild(pic);
     
     var limited = document.createElement('div');
