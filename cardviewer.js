@@ -88,7 +88,7 @@ function UpdateZoomDataOrgDB(passcode, data)
         for (const artworkId in manifest.cards[data.cardId])
         {
             const artworkData = manifest.cards[data.cardId][artworkId];
-            document.getElementById('zoom-image').firstChild.src = ('https://artworks.ygorganization.com' + (artworkData.bestTCG || artworkData.bestOCG));
+            document.getElementById('zoom-image').firstChild.src = new URL((artworkData.bestTCG || artworkData.bestOCG), 'https://artworks.ygorganization.com').href;
             break;
         }
     });
