@@ -3,7 +3,7 @@ const defaultSettings =
     'stackLTR': false,
     'stackDuplicates': false,
     'highResCards': false,
-    'useTcgplayerPrices': false,
+    'useTcgplayerPrices': true,
     'alwaysLoadPrices': false,
     'ocgBanlist': false,
     'konamiDBData': false,
