@@ -156,6 +156,7 @@ function ExportPDF()
         
         for (const [a,b] of [['Mon 1 Number','Mon 1 number'],['Total Extra Cards','Total Extra Deck'],['Total Side Cards','Total Side Number']])
             fields[b] = fields[a]; /* grr konami */
+        fields['Main Deck Total'] = [''+((+fields['Total Mon Cards'][0]) + (+fields['Total Spell Cards'][0]) + (+fields['Total Trap Cards'][0]))];
         const result = pdfform().transform(await decklistPromise, fields);
         SaveAs(getExportedFileName('.pdf'), result, 'application/pdf');
         
