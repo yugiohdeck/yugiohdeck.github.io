@@ -1,9 +1,9 @@
-function SaveAs(filename, content)
+function SaveAs(filename, content, type)
 {
     var a = document.createElement('a');
     a.style.display = 'none';
     document.body.appendChild(a);
-    var blob = new Blob([content], {type: 'text/plain'});
+    var blob = new Blob([content], {type});
     var url = window.URL.createObjectURL(blob);
     a.href = url;
     a.download = filename;
@@ -72,7 +72,7 @@ function ExportYDK()
     addYDKLines(lines, 'side');
     lines.push('');
     
-    SaveAs(getExportedFileName('.ydk'), lines.join('\n'));
+    SaveAs(getExportedFileName('.ydk'), lines.join('\n'), 'text/plain');
 }
 
 let addTextLine = function(lines, card, count)
@@ -114,7 +114,50 @@ function ExportText()
         addTextLines(lines, data.extra, 'Extra Deck');
         addTextLines(lines, data.side, 'Side Deck');
         
-        SaveAs(getExportedFileName('.txt'), lines.join('\n'));
+        SaveAs(getExportedFileName('.txt'), lines.join('\n'), 'text/plain');
+        
+        this.firstElementChild.style.display = '';
+    });
+}
+
+function addPdfFields(fields, cards, nameMon, nameSpell, nameTrap) {
+    const offsets = {}, counts = {};
+    offsets[nameMon] = offsets[nameSpell] = offsets[nameTrap] = 0;
+    counts[nameMon] = counts[nameSpell] = counts[nameTrap] = 0;
+    const lookup = {};
+    for (const [obj, data] of cards) {
+        const existing = lookup[data.name];
+        if (existing) {
+            fields[existing[1]] = [''+(++existing[0])];
+            ++counts[existing[2]];
+            continue;
+        }
+        const name = ((data.frameType === 'spell') ? nameSpell : (data.frameType === 'trap') ? nameTrap : nameMon);
+        const fieldIdx = (++offsets[name]);
+        fields[name+' '+fieldIdx+' Name'] = [data.name];
+        fields[name+' '+fieldIdx+' Number'] = ['1'];
+        lookup[data.name] = [1,(name+' '+fieldIdx+' Number'),name];
+        ++counts[name];
+    }
+    for (const name in counts)
+        fields['Total '+name+' Cards'] = [(''+counts[name])];
+}
+var decklistPromise = null;
+function ExportPDF()
+{
+    this.firstElementChild.style.display = 'block';
+    RequestAllCardData(async (data) =>
+    {
+        if (!decklistPromise) decklistPromise = fetch('/data/YGO_Constructed_Decklist_EN.pdf').then((r) => r.arrayBuffer());
+        const fields = {};
+        addPdfFields(fields, data.main, 'Mon', 'Spell', 'Trap');
+        addPdfFields(fields, data.extra, 'Extra', 'Extra', 'Extra');
+        addPdfFields(fields, data.side, 'Side', 'Side', 'Side');
+        
+        for (const [a,b] of [['Mon 1 Number','Mon 1 number'],['Total Extra Cards','Total Extra Deck'],['Total Side Cards','Total Side Number']])
+            fields[b] = fields[a]; /* grr konami */
+        const result = pdfform().transform(await decklistPromise, fields);
+        SaveAs(getExportedFileName('.pdf'), result, 'application/pdf');
         
         this.firstElementChild.style.display = '';
     });
@@ -449,7 +492,7 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('toolbox-copyurl').addEventListener("click", CopyURL);
     document.getElementById('toolbox-export-ydk').addEventListener("click", ExportYDK);
     document.getElementById('toolbox-export-text').addEventListener("click", ExportText);
-    document.getElementById('toolbox-export-reddit').addEventListener("click", ExportReddit);
+    document.getElementById('toolbox-export-pdf').addEventListener("click", ExportPDF);
     document.getElementById('toolbox-export-qr').addEventListener("click", ExportQRCode);
     
     document.getElementById('toolbox-price-load').addEventListener("click", LoadPriceBreakdown);
