@@ -380,6 +380,11 @@ let updateCardPrice = function(data)
         try
         {
             var tcgplayerURL = new URL(data.tcgplayer_url);
+            if (tcgplayerURL.host === 'tcgplayer.pxf.io')
+            {
+                tcgplayerURL = new URL(tcgplayerURL.searchParams.get('u'));
+            }
+
             if (window.tcgplayerAffiliate)
             {
                 tcgplayerURL.searchParams.set('utm_campaign', 'affiliate');
