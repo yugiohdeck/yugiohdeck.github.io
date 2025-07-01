@@ -50,7 +50,7 @@ function UpdateZoomData(data)
         kdbBtn.href = 'https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=' + konamiId;
         kdbBtn.style.visibility = '';
         var ygorgBtn = document.getElementById('zoom-ygorgdb');
-        ygorgBtn.href = 'https://db.ygorganization.com/card#' + konamiId;
+        ygorgBtn.href = 'https://db.ygoresources.com/card#' + konamiId;
         ygorgBtn.style.visibility = '';
     }
 }
@@ -62,7 +62,7 @@ function FailedZoomDataOrgDB(passcode, err)
         return;
 
     viewer.classList.add('konami','bad');
-    document.getElementById('zoom-image').firstChild.src = 'https://db.ygorganization.com/img/no_data_card.png';
+    document.getElementById('zoom-image').firstChild.src = 'https://db.ygoresources.com/img/no_data_card.png';
     document.getElementById('zoom-name').innerText = 'API failed';
     document.getElementById('zoom-text').innerText = ('Failed to get card data:\n-'+err);
 }
@@ -106,7 +106,7 @@ function UpdateZoomDataOrgDB(passcode, data)
     kdbBtn.href = 'https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=' + data.cardId;
     kdbBtn.style.visibility = '';
     var ygorgBtn = document.getElementById('zoom-ygorgdb');
-    ygorgBtn.href = 'https://db.ygorganization.com/card#' + data.cardId;
+    ygorgBtn.href = 'https://db.ygoresources.com/card#' + data.cardId;
     ygorgBtn.style.visibility = '';
     
     viewer.classList.add('konami','good');

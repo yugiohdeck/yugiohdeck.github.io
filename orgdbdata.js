@@ -28,7 +28,7 @@ const _passcodeToKonamiId = ((p) => (_passcodeCache[p] || (_passcodeCache[p] = _
 
 const _orgdbRequest = (async (p) =>
 {
-    return await (await fetch('https://db.ygorganization.com/data/card/'+(await _passcodeToKonamiId(p)))).json();
+    return await (await fetch('https://db.ygoresources.com/data/card/'+(await _passcodeToKonamiId(p)))).json();
 });
 
 let _orgdbCache = {};
