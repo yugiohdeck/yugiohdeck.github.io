@@ -2,10 +2,34 @@ const BITS_PER_CHAR = 8;
 const BITS_PER_CARD_CODE = 27;
 const BITS_PER_CARD_COUNT = 2;
 
+/** [cardId, cardId, cardId] => [[cardId, 3]] */
+const compressCopies = ((data) => {
+    const output = [];
+    for (const cardId of data) {
+        if (output.length && (output[output.length-1][0] == cardId))
+            output[output.length-1][1] += 1;
+        else
+            output.push([cardId,1]);
+    }
+    return output;
+});
+
+/** [[cardId, 3]] => [cardId, cardId, cardId] */
+const decompressCopies = ((data) => {
+    const output = [];
+    for (const [cardId, copies] of data) {
+        for (let i=0; i<copies; ++i)
+            output.push(cardId);
+    }
+    return output;
+});
+
 function CompressDeckData(data)
 {
     if (!data || !data.length)
         return '';
+    
+    data = compressCopies(data);
     
     var raw = '';
     
@@ -19,6 +43,7 @@ function CompressDeckData(data)
         var cardCount = data[currentCardIndex][1];
         if ((cardCode >> BITS_PER_CARD_CODE) || (cardCount >> BITS_PER_CARD_COUNT))
         { // skip any cards that do not fit into 27+2 bits
+            console.error('Invalid card code or card count', cardCode, cardCount);
             currentCardIndex += 1;
             nextBitInInput = 0;
             continue;
@@ -90,5 +115,5 @@ function DecompressDeckData(data)
         }
     }
     
-    return decompressed;
+    return decompressCopies(decompressed);
 }

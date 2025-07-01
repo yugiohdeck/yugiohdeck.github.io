@@ -113,16 +113,16 @@ function UpdateZoomDataOrgDB(passcode, data)
 }
 
 var zoomedCard = null;
-function ZoomThisCard()
+function ZoomCard(card)
 {
-    if (this != zoomedCard)
+    if (card != zoomedCard)
     {
         if (zoomedCard)
             zoomedCard.classList.remove('selected')
-        zoomedCard = this;
-        this.classList.add('selected');
+        zoomedCard = card;
+        card.classList.add('selected');
         
-        var id = this.cardId;
+        var id = card.cardId;
         
         document.getElementById('zoom-viewer').zoomedCardId = id;
         document.getElementById('zoom-viewer').classList.remove('konami','good','bad');

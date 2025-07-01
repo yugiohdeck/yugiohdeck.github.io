@@ -343,6 +343,37 @@ function ExportQRCode()
     ShowModal('modal-qr');
 }
 
+function SelectCardForSwap(card) {
+    const swapSelectedCard = document.querySelector('.card.swap-selection');
+    if (card && swapSelectedCard && (card !== swapSelectedCard) && (card.deckTag === swapSelectedCard.deckTag)) {
+        const a = hashData.decks[card.deckTag];
+        a[card.deckPos] = swapSelectedCard.cardId;
+        a[swapSelectedCard.deckPos] = card.cardId;
+        HashDataChanged();
+        card = null;
+    } else if (card === swapSelectedCard) {
+        card = null;
+    }
+    if (swapSelectedCard) {
+        swapSelectedCard.classList.remove('swap-selection');
+    }
+    if (card) {
+        card.classList.add('swap-selection');
+    }
+}
+
+function ToggleSortingMode()
+{
+    const btn = document.getElementById('toolbox-sort-mode');
+    if (btn.classList.contains('swap-mode')) {
+        SelectCardForSwap(null);
+        btn.classList.replace('swap-mode', 'to-start-mode');
+    } else if (btn.classList.contains('to-start-mode'))
+        btn.classList.remove('to-start-mode');
+    else
+        btn.classList.add('swap-mode');
+}
+
 function UpdatePriceTotal()
 {
     var container = document.getElementById('toolbox-price-list');
@@ -561,6 +592,7 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('toolbox-export-text').addEventListener("click", ExportText);
     document.getElementById('toolbox-export-pdf').addEventListener("click", ExportPDF);
     document.getElementById('toolbox-export-qr').addEventListener("click", ExportQRCode);
+    document.getElementById('toolbox-sort-mode').addEventListener("click", ToggleSortingMode);
     
     document.getElementById('toolbox-price-load').addEventListener("click", LoadPriceBreakdown);
 });

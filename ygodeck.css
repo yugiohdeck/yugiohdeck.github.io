@@ -184,6 +184,13 @@ div.card
     width:    10vh;
     height:   14vh;
     cursor: zoom-in;
+    transition: transform .5s;
+}
+
+div.card.swap-selection {
+    cursor: zoom-out;
+    transform: scale(150%);
+    z-index: 500 !important;
 }
 
 div.card > img

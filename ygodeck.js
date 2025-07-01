@@ -128,12 +128,26 @@ function LimitedCallbackOrgDBFailed(e)
     this.title = ('Failed to retrieve Forbidden & Limited List status:\n- '+e);
 }
 
-function MakeDOMCard(id)
+function MakeDOMCard(tag, i, id)
 {
     var main = document.createElement('div');
     main.className = 'card';
+    main.deckTag = tag;
+    main.deckPos = i;
     main.cardId = id;
-    main.addEventListener("click", ZoomThisCard);
+    main.addEventListener("click", function() {
+        const sortModeBtn = document.getElementById('toolbox-sort-mode');
+        if (sortModeBtn.classList.contains('swap-mode')) {
+            SelectCardForSwap(this);
+        } else if (sortModeBtn.classList.contains('to-start-mode')) {
+            const a = hashData.decks[this.deckTag];
+            for (let i=this.deckPos; i>0; --i) a[i] = a[i-1];
+            a[0] = this.cardId;
+            HashDataChanged();
+        } else {
+            ZoomCard(this);
+        }
+    });
     
     var pic = document.createElement('img');
     if (GetUserSettingBool('highResCards'))
@@ -165,12 +179,10 @@ function LoadDeck(cards, tag)
     
     if (cards)
     {
-        for (var i=0, n=cards.length; i<n; ++i)
+        for (let i=0, n=cards.length; i<n; ++i)
         {
-            var id = cards[i][0];
-            var count = cards[i][1];
-            for (var j=0;j<count;++j)
-                container.appendChild(MakeDOMCard(id));
+            const cardId = cards[i];
+            container.appendChild(MakeDOMCard(tag, i, cardId));
         }
     }
     
@@ -208,7 +220,7 @@ let updateFromHashData = function()
 
 function SetDeckTitle(title) { hashData.title = (title && title.length) ? title : null; HashDataChanged(); }
 function GetDeckTitle() { return hashData.title; }
-function SetDeckData(main, extra, side, title) { hashData.decks.main = main; hashData.decks.extra = extra; hashData.decks.side = side; SetDeckTitle(title); }
+function SetDeckData(main, extra, side, title) { hashData.decks.main = decompressCopies(main); hashData.decks.extra = decompressCopies(extra); hashData.decks.side = decompressCopies(side); SetDeckTitle(title); }
 
 let updateSubscriber = null;
 function HashDataChanged()

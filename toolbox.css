@@ -28,6 +28,27 @@ div.toolbox-button > div.toolbox-indicator
     background: #999999;
 }
 
+#toolbox-sort-mode-overlay
+{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-align: center;
+    background: #333;
+    color: #ccc;
+    transition: opacity .5s;
+}
+#toolbox-sort-mode.swap-mode > #toolbox-sort-mode-overlay,
+#toolbox-sort-mode.to-start-mode > #toolbox-sort-mode-overlay
+{ opacity: 1; }
+
+#toolbox-sort-mode.swap-mode > #toolbox-sort-mode-overlay::before { content: 'Swap cards'; }
+#toolbox-sort-mode.to-start-mode > #toolbox-sort-mode-overlay::before { content: 'Move to start'; }
+
 div#toolbox > div
 {
     background: #aaaaaa;
