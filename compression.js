@@ -29,7 +29,8 @@ function CompressDeckData(data)
     if (!data || !data.length)
         return '';
     
-    data = compressCopies(data);
+    if (type(data[0]) === 'number')
+        data = compressCopies(data);
     
     var raw = '';
     
