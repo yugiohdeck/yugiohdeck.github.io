@@ -47,6 +47,66 @@ function CopyURL()
     }, CopyURLFailed);
 }
 
+function CopyYDKeFailed()
+{
+    const button = document.getElementById('toolbox-copy-ydke');
+    button.firstElementChild.innerText = 'Failed 😔\uFE0E';
+    button.firstElementChild.style.display = 'block';
+    window.setTimeout(() =>
+    {
+        button.firstElementChild.style.display = '';
+        button.currentlyDisabled = false;
+    }, 2000);
+}
+
+const buildYDKeSegment = function(tag)
+{
+    const cards = SortDeckCards(document.getElementById(tag+'-deck-container'));
+    let ydke = '';
+    for (const card of cards) {
+        const cardId = card.cardId;
+        ydke +=
+            String.fromCharCode(
+                cardId & 0xff,
+                (cardId >> 8) & 0xff,
+                (cardId >> 16) & 0xff,
+                (cardId >> 24) & 0xff
+            );
+    }
+    return btoa(ydke);
+};
+const buildYDKe = function()
+{
+    const main = buildYDKeSegment('main');
+    const extra = buildYDKeSegment('extra');
+    const side = buildYDKeSegment('side');
+    
+    return ('ydke://' + main + '!' + extra + '!' + side + '!');
+};
+
+function CopyYDKe()
+{
+    if (this.currentlyDisabled)
+        return;
+    
+    this.currentlyDisabled = true;
+    if (!navigator.clipboard)
+    {
+        CopyYDKeFailed();
+        return;
+    }
+    navigator.clipboard.writeText(buildYDKe()).then(() =>
+    {
+        this.firstElementChild.innerText = 'Copied!';
+        this.firstElementChild.style.display = 'block';
+        window.setTimeout(() =>
+        {
+            this.firstElementChild.style.display = '';
+            this.currentlyDisabled = false;
+        }, 2000);
+    }, CopyYDKeFailed);
+}
+
 let getExportedFileName = function(ending)
 {
     var title = GetDeckTitle();
@@ -496,6 +556,7 @@ document.addEventListener("DOMContentLoaded",function()
     document.getElementById('toolbox-title').addEventListener("click", function() { SetDeckTitle(window.prompt("New title:", GetDeckTitle())); });
     document.getElementById('toolbox-close').addEventListener("click", function() { document.location.hash = ''; ReloadFromHashData(); });
     document.getElementById('toolbox-copyurl').addEventListener("click", CopyURL);
+    document.getElementById('toolbox-copy-ydke').addEventListener("click", CopyYDKe);
     document.getElementById('toolbox-export-ydk').addEventListener("click", ExportYDK);
     document.getElementById('toolbox-export-text').addEventListener("click", ExportText);
     document.getElementById('toolbox-export-pdf').addEventListener("click", ExportPDF);
